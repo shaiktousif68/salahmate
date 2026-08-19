@@ -38,3 +38,7 @@ Thumbs.db
 # Logs
 *.log
 .env_backup
+
+# Generated application caches
+app/services/.quran_cache/
+app/services/.prayer_cache/
