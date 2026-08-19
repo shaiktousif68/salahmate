@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Surah {{ surah_meta.english_name }} - Quran - SalahMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/quran.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="quran-reader-page" data-target-ayah="{{ target_ayah or '' }}">
+    <div class="reader-header">
+        <h1>{{ surah_meta.name }}</h1>
+        <p>{{ surah_meta.english_name }} ({{ surah_meta.english_name_translation }})</p>
+        <p style="margin-top: 0.5rem;">
+            <span class="status-badge status-jamaat">{{ surah_meta.revelation_type }}</span>
+            <span class="status-badge status-alone" style="margin-left: 0.5rem;">{{ surah_meta.number_of_ayahs }} Ayahs</span>
+        </p>
+    </div>
+
+    <div class="reader-toolbar glass-panel">
+        <div class="reader-toolbar-group">
+            <a href="{{ url_for('quran.index', view='surah') }}" class="btn btn-outline btn-sm">
+                <i class="fas fa-arrow-left"></i> All Surahs
+            </a>
+            {% if surah_meta.number > 1 %}
+            <a href="{{ url_for('quran.surah', surah_number=surah_meta.number - 1) }}" class="btn btn-outline btn-sm">
+                <i class="fas fa-chevron-left"></i> Previous
+            </a>
+            {% endif %}
+            {% if surah_meta.number < 114 %}
+            <a href="{{ url_for('quran.surah', surah_number=surah_meta.number + 1) }}" class="btn btn-outline btn-sm">
+                Next <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endif %}
+        </div>
+        <div class="reader-toolbar-group">
+            <select id="translation-select" class="quran-control">
+                {% for t in translations %}
+                <option value="{{ t.identifier }}" {% if translation_identifier == t.identifier %}selected{% endif %}>
+                    {{ t.name }}
+                </option>
+                {% endfor %}
+            </select>
+            <select id="reciter-select" class="quran-control">
+                {% for reciter in reciters %}
+                <option value="{{ reciter.identifier }}">{{ reciter.name }}</option>
+                {% endfor %}
+            </select>
+            <button class="quran-font-size" data-direction="decrease" title="Decrease font size">
+                <i class="fas fa-minus"></i>
+            </button>
+            <button class="quran-font-size" data-direction="increase" title="Increase font size">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button id="reading-mode-toggle" class="btn btn-outline btn-sm">
+                <i class="fas fa-sun"></i> Light
+            </button>
+        </div>
+    </div>
+
+    <!-- Sticky Audio Player — premium 3D SalahMate UI -->
+    <div class="audio-player glass-panel" id="audio-player" style="display: none;">
+        <!-- 3D floating card top layer with Islamic geometric glow -->
+        <div class="audio-player-3d-top"></div>
+
+        <div class="audio-player-main">
+            <div class="audio-player-info">
+                <div class="audio-player-visual" id="audio-player-visual">
+                    <!-- 3D Play Button with pulse rings -->
+                    <div class="audio-3d-btn-core" id="audio-player-icon-wrap">
+                        <i class="fas fa-play" id="audio-player-icon"></i>
+                    </div>
+                    <span class="play-ring ring-1"></span>
+                    <span class="play-ring ring-2"></span>
+                    <span class="play-ring ring-3"></span>
+                    <!-- Animated 3D waveform bars -->
+                    <div class="audio-waveform" id="audio-waveform">
+                        <span style="--i:1"></span><span style="--i:2"></span>
+                        <span style="--i:3"></span><span style="--i:4"></span>
+                        <span style="--i:5"></span><span style="--i:6"></span>
+                        <span style="--i:7"></span><span style="--i:8"></span>
+                        <span style="--i:9"></span><span style="--i:10"></span>
+                        <span style="--i:11"></span><span style="--i:12"></span>
+                    </div>
+                </div>
+                <div class="audio-player-details">
+                    <strong id="audio-player-title">Surah {{ surah_meta.english_name }}</strong>
+                    <span id="audio-player-time">0:00 / 0:00</span>
+                </div>
+            </div>
+
+            <!-- Custom premium progress bar (no native controls) -->
+            <div class="audio-progress" id="audio-progress">
+                <div class="audio-progress-track">
+                    <div class="audio-progress-fill" id="audio-progress-fill"></div>
+                    <div class="audio-progress-thumb" id="audio-progress-thumb"></div>
+                </div>
+            </div>
+
+            <div class="audio-controls">
+                <button class="audio-control-btn" id="audio-prev" title="Previous" aria-label="Previous"><i class="fas fa-step-backward"></i></button>
+                <button class="audio-control-btn audio-play-btn" id="audio-play-pause" title="Play/Pause" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
+                <button class="audio-control-btn" id="audio-next" title="Next" aria-label="Next"><i class="fas fa-step-forward"></i></button>
+
+                <!-- Custom speed control -->
+                <div class="audio-select-wrap" id="audio-speed-wrap">
+                    <button class="audio-select-btn" id="audio-speed-btn" title="Playback speed" aria-label="Playback speed">
+                        <span id="audio-speed-label">1x</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="audio-select-dropdown" id="audio-speed-dropdown">
+                        <button class="audio-select-option" data-speed="0.75">0.75x</button>
+                        <button class="audio-select-option active" data-speed="1">1x</button>
+                        <button class="audio-select-option" data-speed="1.25">1.25x</button>
+                        <button class="audio-select-option" data-speed="1.5">1.5x</button>
+                    </div>
+                </div>
+
+                <!-- Custom repeat control -->
+                <div class="audio-select-wrap" id="audio-repeat-wrap">
+                    <button class="audio-select-btn" id="audio-repeat-btn" title="Repeat" aria-label="Repeat">
+                        <i class="fas fa-repeat"></i>
+                        <span id="audio-repeat-label">Off</span>
+                    </button>
+                    <div class="audio-select-dropdown" id="audio-repeat-dropdown">
+                        <button class="audio-select-option active" data-repeat="off">Off</button>
+                        <button class="audio-select-option" data-repeat="ayah">Repeat Ayah</button>
+                        <button class="audio-select-option" data-repeat="surah">Repeat Surah</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="ayah-list">
+        {% for ayah in surah.ayahs %}
+        <div class="ayah-item {% if last_read_ayah and last_read_ayah.ayah_number == ayah.numberInSurah %}last-read{% endif %}"
+             data-surah="{{ surah_meta.number }}"
+             data-ayah="{{ ayah.numberInSurah }}"
+             data-para="{{ ayah.juz or '' }}"
+             data-page="{{ ayah.page or '' }}"
+             id="ayah-{{ ayah.numberInSurah }}">
+            <div class="ayah-text">{{ ayah.text }}</div>
+            {% set translation_text = translation_map.get(ayah.numberInSurah|string) %}
+            {% if translation_text %}
+            <div class="ayah-translation">
+                {{ translation_text }}
+            </div>
+            {% endif %}
+            <div class="ayah-meta">
+                <div class="ayah-info">
+                    <span class="ayah-number">{{ ayah.numberInSurah }}</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;">
+                        Juz {{ ayah.juz or '-' }} • Page {{ ayah.page or '-' }}
+                    </span>
+                </div>
+                <div class="ayah-actions">
+                    <button class="ayah-action-btn audio-btn"
+                            data-surah="{{ surah_meta.number }}"
+                            data-ayah="{{ ayah.numberInSurah }}"
+                            title="Play audio">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="ayah-action-btn bookmark-btn {% if ayah.numberInSurah in bookmarked_ayahs %}active{% endif %}"
+                            data-surah="{{ surah_meta.number }}"
+                            data-ayah="{{ ayah.numberInSurah }}"
+                            data-para="{{ ayah.juz or '' }}"
+                            data-page="{{ ayah.page or '' }}"
+                            title="Bookmark">
+                        <i class="fas fa-bookmark"></i>
+                    </button>
+                    <div class="ayah-menu-wrap">
+                        <button class="ayah-action-btn ayah-menu-btn" title="Menu">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div class="ayah-dropdown">
+                            <button class="ayah-menu-item" data-action="translation" data-surah="{{ surah_meta.number }}" data-ayah="{{ ayah.numberInSurah }}">
+                                <i class="fas fa-language"></i> Translation
+                            </button>
+                            <button class="ayah-menu-item" data-action="audio" data-surah="{{ surah_meta.number }}" data-ayah="{{ ayah.numberInSurah }}">
+                                <i class="fas fa-headphones"></i> Audio
+                            </button>
+                            <button class="ayah-menu-item" data-action="bookmark" data-surah="{{ surah_meta.number }}" data-ayah="{{ ayah.numberInSurah }}" data-para="{{ ayah.juz or '' }}" data-page="{{ ayah.page or '' }}">
+                                <i class="fas fa-bookmark"></i> Bookmark
+                            </button>
+                            <button class="ayah-menu-item" data-action="share" data-surah="{{ surah_meta.number }}" data-ayah="{{ ayah.numberInSurah }}">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
+                            <button class="ayah-menu-item" data-action="copy" data-surah="{{ surah_meta.number }}" data-ayah="{{ ayah.numberInSurah }}">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="reader-navigation">
+        {% if surah_meta.number > 1 %}
+        <a href="{{ url_for('quran.surah', surah_number=surah_meta.number - 1) }}" class="btn btn-primary">
+            <i class="fas fa-chevron-left"></i> Previous Surah
+        </a>
+        {% else %}
+        <span></span>
+        {% endif %}
+
+        <div class="reader-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: {{ (surah_meta.number / 114) * 100 }}%"></div>
+            </div>
+            <span>Surah {{ surah_meta.number }} of 114</span>
+        </div>
+
+        {% if surah_meta.number < 114 %}
+        <a href="{{ url_for('quran.surah', surah_number=surah_meta.number + 1) }}" class="btn btn-primary">
+            Next Surah <i class="fas fa-chevron-right"></i>
+        </a>
+        {% else %}
+        <span></span>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Translation Modal -->
+<div class="modal-overlay" id="translation-modal">
+    <div class="modal-content glass-panel">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <h3 id="modal-ayah-label">Translation</h3>
+        <div id="modal-arabic" class="modal-arabic"></div>
+        <div id="modal-translation" class="modal-translation"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Restore user's saved translation preference (if any) on a REAL first load
+    // only. The flag prevents re-running during SPA navigation, where this
+    // script is re-executed after every page swap — calling location.replace()
+    // there would abort the SPA transition (the "double-click" / slow
+    // Previous-Next symptom). The translation actually stays selected on
+    // SPA swaps because quran.js reads localStorage directly.
+    (function() {
+        if (window.__quranTranslationChecked) return;
+        window.__quranTranslationChecked = true;
+        // Only run on a REAL page load. During SPA navigation, window.location
+        // still points to the previous page (e.g. the listing), so redirecting
+        // here would bounce the user back to /quran?view=surah. On SPA swaps
+        // quran.js applies the saved translation client-side instead.
+        if (window.location.pathname !== '/quran/surah/{{ surah_meta.number }}') return;
+        var saved = localStorage.getItem('quranTranslation');
+        if (saved && !new URLSearchParams(window.location.search).has('translation')) {
+            var url = new URL(window.location.href);
+            url.searchParams.set('translation', saved);
+            window.location.replace(url.toString());
+        }
+    })();
+</script>
+<script src="{{ url_for('static', filename='js/quran.js') }}"></script>
+{% endblock %}

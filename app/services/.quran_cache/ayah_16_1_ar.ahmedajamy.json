@@ -1,0 +1,35 @@
+[
+  1787151847.2031214,
+  {
+    "number": 1902,
+    "audio": "https://cdn.islamic.network/quran/audio/128/ar.ahmedajamy/1902.mp3",
+    "audioSecondary": [
+      "https://cdn.islamic.network/quran/audio/64/ar.ahmedajamy/1902.mp3"
+    ],
+    "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ أَتَىٰٓ أَمْرُ ٱللَّهِ فَلَا تَسْتَعْجِلُوهُ ۚ سُبْحَٰنَهُۥ وَتَعَٰلَىٰ عَمَّا يُشْرِكُونَ",
+    "edition": {
+      "identifier": "ar.ahmedajamy",
+      "language": "ar",
+      "name": "أحمد بن علي العجمي",
+      "englishName": "Ahmed ibn Ali al-Ajamy",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 16,
+      "name": "سُورَةُ النَّحۡلِ",
+      "englishName": "An-Nahl",
+      "englishNameTranslation": "The Bee",
+      "numberOfAyahs": 128,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 14,
+    "manzil": 3,
+    "page": 267,
+    "ruku": 224,
+    "hizbQuarter": 107,
+    "sajda": false
+  }
+]

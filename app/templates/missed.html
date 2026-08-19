@@ -1,0 +1,277 @@
+{% extends "base.html" %}
+
+{% block title %}Missed Salah - SalahMate{% endblock %}
+
+{% block content %}
+<div class="page-container qaza-page">
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">QAZA TRACKING</span>
+            <h1>Missed Salah</h1>
+            <p>Track your missed prayers and convert them to Qaza.</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card glass-panel">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div>
+                <div class="stat-value" id="pending-qaza-count">{{ pending_qaza_count }}</div>
+                <div class="stat-label">Pending Missed</div>
+            </div>
+        </div>
+
+        <div class="stat-card glass-panel">
+            <div class="stat-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div>
+                <div class="stat-value" id="completed-qaza-count">{{ completed_qaza_count }}</div>
+                <div class="stat-label">Completed Qaza</div>
+            </div>
+        </div>
+
+        <div class="stat-card glass-panel">
+            <div class="stat-icon">
+                <i class="fas fa-kaaba"></i>
+            </div>
+            <div>
+                <div class="stat-value" id="total-qaza-count">{{ total_qaza }}</div>
+                <div class="stat-label">Total Qaza</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card glass-panel qaza-card">
+        <div class="card-header">
+            <div>
+                <h2>
+                    <i class="fas fa-clock"></i>
+                    Pending Missed Prayers
+                </h2>
+                <p>Convert a missed prayer to Qaza when you complete it.</p>
+            </div>
+        </div>
+
+    {% if missed_by_date %}
+        <div class="qaza-list">
+            {% for date_key, data in missed_by_date.items() %}
+            <div class="qaza-date-group">
+                <div class="qaza-date">
+                    <div class="date-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div>
+                        <strong>{{ data.date.strftime('%d %B %Y') }}</strong>
+                        <small>{{ data.date.strftime('%A') }}</small>
+                    </div>
+                </div>
+
+                <div class="qaza-prayers">
+                    {% for prayer in data.prayers %}
+                    <div class="qaza-prayer glass-panel" id="missed-prayer-{{ prayer.id }}">
+                        <div class="prayer-info">
+                            <div class="prayer-icon">
+                                {% if prayer.prayer_name in ['Fajr', 'Dhuhr'] %}
+                                    <i class="fas fa-sun"></i>
+                                {% elif prayer.prayer_name in ['Asr', 'Maghrib'] %}
+                                    <i class="fas fa-cloud-sun"></i>
+                                {% else %}
+                                    <i class="fas fa-moon"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <strong>{{ prayer.prayer_name }}</strong>
+                                <span>Missed Salah</span>
+                            </div>
+                        </div>
+
+                        <button
+                            class="btn btn-primary qaza-btn"
+                            data-prayer-id="{{ prayer.id }}"
+                            onclick="openQazaModal({{ prayer.id }}, this)">
+                            <i class="fas fa-check"></i>
+                            Make Qaza
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state qaza-empty">
+            <div class="empty-icon">
+                <i class="fas fa-mosque"></i>
+            </div>
+            <h3>No Missed Salah</h3>
+            <p>Alhamdulillah! You currently have no pending missed prayers.</p>
+            <div class="empty-dua">
+                <span>الحمد لله</span>
+                <small>Alhamdulillah</small>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Custom SalahMate Qaza confirmation modal (replaces native confirm/alert) -->
+<div class="qaza-modal-overlay" id="qaza-modal-overlay" aria-hidden="true">
+    <div class="qaza-modal" role="dialog" aria-modal="true" aria-labelledby="qaza-modal-title">
+        <div class="qaza-modal-glow"></div>
+        <div class="qaza-modal-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        <h3 id="qaza-modal-title">Mark this missed prayer as Qaza completed?</h3>
+        <p class="qaza-modal-sub">This will move the prayer from Missed to Qaza.</p>
+        <div class="qaza-modal-actions">
+            <button class="btn btn-outline qaza-modal-cancel" id="qaza-modal-cancel">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button class="btn btn-primary qaza-modal-confirm" id="qaza-modal-confirm">
+                <i class="fas fa-check"></i> Make Qaza
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    // Qaza modal + confirm logic.
+    // IMPORTANT: uses document-level delegation and re-queries the modal DOM
+    // on every open/close. This is SPA-safe: after navigation.js re-renders
+    // the page, the previous captured element references would be DETACHED
+    // (making the button "do nothing"). Fresh lookups avoid that entirely.
+    var pendingPrayerId = null;
+    var pendingButton = null;
+
+    function getOverlay() { return document.getElementById('qaza-modal-overlay'); }
+    function getConfirmBtn() { return document.getElementById('qaza-modal-confirm'); }
+    function getCancelBtn() { return document.getElementById('qaza-modal-cancel'); }
+
+    // Expose globally — inline onclick calls this with the current button.
+    window.openQazaModal = function(prayerId, button) {
+        var overlay = getOverlay();
+        if (!overlay) return;
+        pendingPrayerId = prayerId;
+        pendingButton = button;
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        var confirmBtn = getConfirmBtn();
+        if (confirmBtn) confirmBtn.focus();
+    };
+
+    function closeModal() {
+        var overlay = getOverlay();
+        if (overlay) {
+            overlay.classList.remove('open');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+        pendingPrayerId = null;
+        pendingButton = null;
+    }
+
+    // Globally monitor the modal overlay + its buttons. Because this listener
+    // re-queries the DOM each time, it works even after SPA re-renders.
+    document.addEventListener('click', function(e) {
+        var overlay = getOverlay();
+        if (!overlay || !overlay.classList.contains('open')) return;
+
+        // Cancel button
+        if (e.target.closest('#qaza-modal-cancel')) {
+            closeModal();
+            return;
+        }
+        // Backdrop click (outside the dialog)
+        if (e.target === overlay) {
+            closeModal();
+            return;
+        }
+    });
+
+    // Confirm button — only one listener persists via delegation.
+    document.addEventListener('click', async function(e) {
+        var confirmBtn = getConfirmBtn();
+        if (!confirmBtn || !e.target.closest('#qaza-modal-confirm')) return;
+        if (pendingPrayerId === null) return;
+
+        var prayerId = pendingPrayerId;
+        var button = pendingButton;
+        var sending = false; // idempotency guard for this click
+        if (button) {
+            button.disabled = true;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        }
+        closeModal();
+
+        if (sending) return;
+        sending = true;
+
+        try {
+            var response = await fetch(
+                "{{ url_for('prayer.make_qaza') }}",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prayer_id: prayerId })
+                }
+            );
+
+            var data = await response.json();
+
+            if (!data.success) {
+                throw new Error(data.error || "Unable to update prayer");
+            }
+
+            // Remove the prayer card with a smooth exit.
+            var card = document.getElementById("missed-prayer-" + prayerId);
+            if (card) {
+                card.style.opacity = "0";
+                card.style.transform = "translateX(40px)";
+                card.style.transition = "all 0.35s ease";
+                setTimeout(function() {
+                    card.remove();
+                    // If no other pending prayers remain, stop refreshing the
+                    // whole page — instead reload once so the empty state and
+                    // stats reflect the true DB state.
+                    if (document.querySelectorAll('.qaza-prayer').length === 0) {
+                        location.reload();
+                    }
+                }, 350);
+            }
+
+            // Update the summary cards from the REAL server-returned values.
+            var pendingEl = document.getElementById('pending-qaza-count');
+            var completedEl = document.getElementById('completed-qaza-count');
+            var totalEl = document.getElementById('total-qaza-count');
+            if (data.counts) {
+                if (typeof data.counts.pending === 'number' && pendingEl) pendingEl.textContent = data.counts.pending;
+                if (typeof data.counts.completed === 'number' && completedEl) completedEl.textContent = data.counts.completed;
+                if (typeof data.counts.total === 'number' && totalEl) totalEl.textContent = data.counts.total;
+            }
+
+            showToast('Prayer marked as Qaza', 'success');
+        } catch (error) {
+            console.error('Qaza update failed:', error);
+            showToast(error.message || 'Unable to complete Qaza. Please try again.', 'danger');
+            if (button) {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-check"></i> Make Qaza';
+            }
+        }
+    });
+
+    // Escape closes the modal (fresh lookup each time).
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            var overlay = getOverlay();
+            if (overlay && overlay.classList.contains('open')) closeModal();
+        }
+    });
+})();
+</script>
+{% endblock %}

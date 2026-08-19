@@ -1,0 +1,37 @@
+============================= test session starts =============================
+platform win32 -- Python 3.13.3, pytest-8.2.2, pluggy-1.6.0 -- c:\Program Files\Python313\python.exe
+cachedir: .pytest_cache
+rootdir: c:\Users\Tousif\Desktop\salah_attendence
+plugins: anyio-4.9.0
+collecting ... collected 8 items
+
+tests/test_auth.py::test_register_page PASSED                            [ 12%]
+tests/test_auth.py::test_register_success PASSED                         [ 25%]
+tests/test_auth.py::test_register_duplicate_username PASSED              [ 37%]
+tests/test_auth.py::test_register_password_mismatch PASSED               [ 50%]
+tests/test_auth.py::test_login_page PASSED                               [ 62%]
+tests/test_auth.py::test_login_success PASSED                            [ 75%]
+tests/test_auth.py::test_login_invalid_credentials PASSED                [ 87%]
+tests/test_auth.py::test_logout PASSED                                   [100%]
+
+============================== warnings summary ===============================
+tests/test_auth.py::test_register_page
+  C:\Users\Tousif\AppData\Roaming\Python\Python313\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.4.0) or chardet (7.4.3)/charset_normalizer (3.4.2) doesn't match a supported version!
+    warnings.warn(
+
+tests/test_auth.py::test_register_success
+tests/test_auth.py::test_register_duplicate_username
+tests/test_auth.py::test_login_success
+tests/test_auth.py::test_logout
+  c:\Users\Tousif\Desktop\salah_attendence\app\routes\auth.py:55: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    created_at=datetime.utcnow() # Keep using UTC for the timestamp
+
+tests/test_auth.py::test_register_success
+tests/test_auth.py::test_register_duplicate_username
+tests/test_auth.py::test_login_success
+tests/test_auth.py::test_logout
+  C:\Users\Tousif\AppData\Roaming\Python\Python313\site-packages\sqlalchemy\sql\schema.py:3623: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 8 passed, 9 warnings in 23.06s ========================

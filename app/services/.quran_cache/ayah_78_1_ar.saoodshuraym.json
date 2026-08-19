@@ -1,0 +1,33 @@
+[
+  1787073827.7194185,
+  {
+    "number": 5673,
+    "audio": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/5673.mp3",
+    "audioSecondary": [],
+    "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ عَمَّ يَتَسَآءَلُونَ",
+    "edition": {
+      "identifier": "ar.saoodshuraym",
+      "language": "ar",
+      "name": "سعود الشريم",
+      "englishName": "Saood bin Ibraaheem Ash-Shuraym",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 78,
+      "name": "سُورَةُ النَّبَإِ",
+      "englishName": "An-Naba",
+      "englishNameTranslation": "The Announcement",
+      "numberOfAyahs": 40,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 30,
+    "manzil": 7,
+    "page": 582,
+    "ruku": 518,
+    "hizbQuarter": 233,
+    "sajda": false
+  }
+]

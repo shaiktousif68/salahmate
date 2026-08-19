@@ -1,0 +1,35 @@
+[
+  1787135540.1092987,
+  {
+    "number": 2876,
+    "audio": "https://cdn.islamic.network/quran/audio/128/ar.ahmedajamy/2876.mp3",
+    "audioSecondary": [
+      "https://cdn.islamic.network/quran/audio/64/ar.ahmedajamy/2876.mp3"
+    ],
+    "text": "۞ وَقَالَ ٱلَّذِينَ لَا يَرْجُونَ لِقَآءَنَا لَوْلَآ أُنزِلَ عَلَيْنَا ٱلْمَلَٰٓئِكَةُ أَوْ نَرَىٰ رَبَّنَا ۗ لَقَدِ ٱسْتَكْبَرُوا۟ فِىٓ أَنفُسِهِمْ وَعَتَوْ عُتُوًّۭا كَبِيرًۭا",
+    "edition": {
+      "identifier": "ar.ahmedajamy",
+      "language": "ar",
+      "name": "أحمد بن علي العجمي",
+      "englishName": "Ahmed ibn Ali al-Ajamy",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 25,
+      "name": "سُورَةُ الفُرۡقَانِ",
+      "englishName": "Al-Furqaan",
+      "englishNameTranslation": "The Criterion",
+      "numberOfAyahs": 77,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 21,
+    "juz": 19,
+    "manzil": 4,
+    "page": 362,
+    "ruku": 312,
+    "hizbQuarter": 145,
+    "sajda": false
+  }
+]

@@ -1,0 +1,88 @@
+[
+  1787134399.965827,
+  {
+    "number": 114,
+    "name": "سُورَةُ النَّاسِ",
+    "englishName": "An-Naas",
+    "englishNameTranslation": "Mankind",
+    "revelationType": "Meccan",
+    "numberOfAyahs": 6,
+    "ayahs": [
+      {
+        "number": 6231,
+        "text": "کہو کہ میں لوگوں کے پروردگار کی پناہ مانگتا ہوں",
+        "numberInSurah": 1,
+        "juz": 30,
+        "manzil": 7,
+        "page": 604,
+        "ruku": 556,
+        "hizbQuarter": 240,
+        "sajda": false
+      },
+      {
+        "number": 6232,
+        "text": "(یعنی) لوگوں کے حقیقی بادشاہ کی",
+        "numberInSurah": 2,
+        "juz": 30,
+        "manzil": 7,
+        "page": 604,
+        "ruku": 556,
+        "hizbQuarter": 240,
+        "sajda": false
+      },
+      {
+        "number": 6233,
+        "text": "لوگوں کے معبود برحق کی",
+        "numberInSurah": 3,
+        "juz": 30,
+        "manzil": 7,
+        "page": 604,
+        "ruku": 556,
+        "hizbQuarter": 240,
+        "sajda": false
+      },
+      {
+        "number": 6234,
+        "text": "(شیطان) وسوسہ انداز کی برائی سے جو (خدا کا نام سن کر) پیچھے ہٹ جاتا ہے",
+        "numberInSurah": 4,
+        "juz": 30,
+        "manzil": 7,
+        "page": 604,
+        "ruku": 556,
+        "hizbQuarter": 240,
+        "sajda": false
+      },
+      {
+        "number": 6235,
+        "text": "جو لوگوں کے دلوں میں وسوسے ڈالتا ہے",
+        "numberInSurah": 5,
+        "juz": 30,
+        "manzil": 7,
+        "page": 604,
+        "ruku": 556,
+        "hizbQuarter": 240,
+        "sajda": false
+      },
+      {
+        "number": 6236,
+        "text": "وہ جنّات میں سے (ہو) یا انسانوں میں سے",
+        "numberInSurah": 6,
+        "juz": 30,
+        "manzil": 7,
+        "page": 604,
+        "ruku": 556,
+        "hizbQuarter": 240,
+        "sajda": false
+      }
+    ],
+    "edition": {
+      "identifier": "ur.jalandhry",
+      "language": "ur",
+      "name": "جالندہری",
+      "englishName": "Fateh Muhammad Jalandhry",
+      "format": "text",
+      "type": "translation",
+      "direction": "rtl"
+    }
+  }
+]

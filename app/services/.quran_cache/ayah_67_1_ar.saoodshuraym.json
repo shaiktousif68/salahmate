@@ -1,0 +1,33 @@
+[
+  1786905519.019889,
+  {
+    "number": 5242,
+    "audio": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/5242.mp3",
+    "audioSecondary": [],
+    "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ تَبَٰرَكَ ٱلَّذِى بِيَدِهِ ٱلْمُلْكُ وَهُوَ عَلَىٰ كُلِّ شَىْءٍۢ قَدِيرٌ",
+    "edition": {
+      "identifier": "ar.saoodshuraym",
+      "language": "ar",
+      "name": "سعود الشريم",
+      "englishName": "Saood bin Ibraaheem Ash-Shuraym",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 67,
+      "name": "سُورَةُ المُلۡكِ",
+      "englishName": "Al-Mulk",
+      "englishNameTranslation": "The Sovereignty",
+      "numberOfAyahs": 30,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 29,
+    "manzil": 7,
+    "page": 562,
+    "ruku": 496,
+    "hizbQuarter": 225,
+    "sajda": false
+  }
+]

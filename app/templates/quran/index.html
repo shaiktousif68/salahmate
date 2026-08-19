@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Quran - SalahMate{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/quran.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="quran-container">
+
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class="fas fa-book-open"></i>
+                Quran
+            </h1>
+            <p>Read and track your Quran journey</p>
+        </div>
+    </div>
+
+    <div class="quran-tabs">
+        <a href="{{ url_for('quran.index', view='surah') }}"
+           class="quran-tab {% if view == 'surah' or not view %}active{% endif %}">
+            <i class="fas fa-book-open"></i>
+            Surah
+        </a>
+
+        <a href="{{ url_for('quran.index', view='para') }}"
+           class="quran-tab {% if view == 'para' %}active{% endif %}">
+            <i class="fas fa-book"></i>
+            Para / Juz
+        </a>
+    </div>
+
+    {% if view == 'para' %}
+
+        <div class="quran-grid">
+            {% for para in paras %}
+            <a href="{{ url_for('quran.para', para_number=para.number) }}"
+               class="quran-card">
+
+                <div class="quran-card-number">
+                    {{ para.number }}
+                </div>
+
+                <div class="quran-card-content">
+                    <h3>Para {{ para.number }}</h3>
+
+                    {% if para.name %}
+                    <p>{{ para.name }}</p>
+                    {% endif %}
+                </div>
+
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endfor %}
+        </div>
+
+    {% else %}
+
+        <div class="quran-grid">
+            {% for surah in surahs %}
+            <a href="{{ url_for('quran.surah', surah_number=surah.number) }}"
+               class="quran-card">
+
+                <div class="quran-card-number">
+                    {{ surah.number }}
+                </div>
+
+                <div class="quran-card-content">
+                    <h3>{{ surah.name }}</h3>
+
+                    {% if surah.englishName %}
+                    <p>{{ surah.englishName }}</p>
+                    {% endif %}
+
+                    {% if surah.numberOfAyahs %}
+                    <small>{{ surah.numberOfAyahs }} Ayahs</small>
+                    {% endif %}
+                </div>
+
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Lightweight script for the selection list — the full audio engine
+     (quran.js) is only loaded on the Surah/Para reader pages that need it. -->
+<script src="{{ url_for('static', filename='js/quran-index.js') }}"></script>
+{% endblock %}

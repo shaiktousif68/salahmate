@@ -1,0 +1,31 @@
+[
+  1787073512.19761,
+  {
+    "number": 1,
+    "text": "شروع الله کا نام لے کر جو بڑا مہربان نہایت رحم والا ہے",
+    "edition": {
+      "identifier": "ur.jalandhry",
+      "language": "ur",
+      "name": "جالندہری",
+      "englishName": "Fateh Muhammad Jalandhry",
+      "format": "text",
+      "type": "translation",
+      "direction": "rtl"
+    },
+    "surah": {
+      "number": 1,
+      "name": "سُورَةُ ٱلْفَاتِحَةِ",
+      "englishName": "Al-Faatiha",
+      "englishNameTranslation": "The Opening",
+      "numberOfAyahs": 7,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 1,
+    "manzil": 1,
+    "page": 1,
+    "ruku": 1,
+    "hizbQuarter": 1,
+    "sajda": false
+  }
+]

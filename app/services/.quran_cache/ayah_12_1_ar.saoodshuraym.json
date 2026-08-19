@@ -1,0 +1,33 @@
+[
+  1786905727.117597,
+  {
+    "number": 1597,
+    "audio": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/1597.mp3",
+    "audioSecondary": [],
+    "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ الٓر ۚ تِلْكَ ءَايَٰتُ ٱلْكِتَٰبِ ٱلْمُبِينِ",
+    "edition": {
+      "identifier": "ar.saoodshuraym",
+      "language": "ar",
+      "name": "سعود الشريم",
+      "englishName": "Saood bin Ibraaheem Ash-Shuraym",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 12,
+      "name": "سُورَةُ يُوسُفَ",
+      "englishName": "Yusuf",
+      "englishNameTranslation": "Joseph",
+      "numberOfAyahs": 111,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 12,
+    "manzil": 3,
+    "page": 235,
+    "ruku": 193,
+    "hizbQuarter": 94,
+    "sajda": false
+  }
+]

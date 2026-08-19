@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Prayer History - SalahMate{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">PRAYER HISTORY</span>
+            <h1>Prayer History</h1>
+            <p>{{ start_date.strftime('%B %d, %Y') }} - {{ end_date.strftime('%B %d, %Y') }}</p>
+        </div>
+        <div class="header-actions">
+            <div class="filter-group">
+                <label for="days">Period:</label>
+                <select id="days" name="days" onchange="window.location.href = '?days=' + this.value">
+                    <option value="7" {{ 'selected' if days == 7 }}>Last 7 days</option>
+                    <option value="14" {{ 'selected' if days == 14 }}>Last 14 days</option>
+                    <option value="30" {{ 'selected' if days == 30 }}>Last 30 days</option>
+                    <option value="60" {{ 'selected' if days == 60 }}>Last 60 days</option>
+                    <option value="90" {{ 'selected' if days == 90 }}>Last 90 days</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-calendar-day"></i></div>
+            <div class="stat-info">
+                <div class="stat-value">{{ total_days }}</div>
+                <div class="stat-label">Days Tracked</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <div class="stat-value">{{ total_completed }}</div>
+                <div class="stat-label">Completed</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-info">
+                <div class="stat-value">{{ total_qaza }}</div>
+                <div class="stat-label">Qaza</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+            <div class="stat-info">
+                <div class="stat-value">{{ total_missed }}</div>
+                <div class="stat-label">Missed</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+            <div class="stat-info">
+                <div class="stat-value">{{ completion_rate }}%</div>
+                <div class="stat-label">Completion Rate</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+            <div class="stat-info">
+                <div class="stat-value">{{ best_streak }}</div>
+                <div class="stat-label">Best Streak</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fas fa-list"></i> Daily Records</h2>
+        </div>
+        {% if attendance_records %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        {% for name in prayer_names %}
+                        <th>{{ name }}</th>
+                        {% endfor %}
+                        <th>Completed</th>
+                        <th>Qaza</th>
+                        <th>Missed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    {% set date_key = record.date.isoformat() %}
+                    <tr>
+                        <td>
+                            <strong>{{ record.date.strftime('%b %d, %Y') }}</strong>
+                            <br>
+                            <small class="text-muted">{{ record.date.strftime('%A') }}</small>
+                        </td>
+                        {% for name in prayer_names %}
+                        {% set status = prayers_by_date.get(date_key, {}).get(name, 'not_recorded') %}
+                        <td>
+                            <span class="status-badge status-{{ status }}">
+                                {% if status == 'jamaat' %}
+                                    <i class="fas fa-users"></i>
+                                {% elif status == 'alone' %}
+                                    <i class="fas fa-user"></i>
+                                {% elif status == 'qaza' %}
+                                    <i class="fas fa-clock"></i>
+                                {% elif status == 'missed' %}
+                                    <i class="fas fa-times"></i>
+                                {% elif status == 'excused' %}
+                                    <i class="fas fa-leaf"></i>
+                                {% else %}
+                                    <i class="far fa-circle"></i>
+                                {% endif %}
+                                {{ status|replace('_', ' ')|title }}
+                            </span>
+                        </td>
+                        {% endfor %}
+                        <td><span class="badge" style="background: rgba(16,185,129,0.15); color: var(--emerald-light);">{{ record.total_completed or 0 }}</span></td>
+                        <td><span class="badge" style="background: rgba(245,158,11,0.15); color: var(--warning);">{{ record.total_qaza or 0 }}</span></td>
+                        <td><span class="badge" style="background: rgba(239,68,68,0.15); color: var(--danger);">{{ record.total_missed or 0 }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Records Found</h3>
+            <p>Start tracking your prayers to see your history here.</p>
+            <a href="{{ url_for('attendance.index') }}" class="btn btn-primary" style="margin-top: 1rem;">
+                <i class="fas fa-clipboard-check"></i> Track Today
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

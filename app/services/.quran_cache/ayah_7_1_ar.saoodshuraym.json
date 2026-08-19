@@ -1,0 +1,33 @@
+[
+  1786900897.6327274,
+  {
+    "number": 955,
+    "audio": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/955.mp3",
+    "audioSecondary": [],
+    "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ الٓمٓصٓ",
+    "edition": {
+      "identifier": "ar.saoodshuraym",
+      "language": "ar",
+      "name": "سعود الشريم",
+      "englishName": "Saood bin Ibraaheem Ash-Shuraym",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 7,
+      "name": "سُورَةُ الأَعۡرَافِ",
+      "englishName": "Al-A'raaf",
+      "englishNameTranslation": "The Heights",
+      "numberOfAyahs": 206,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 8,
+    "manzil": 2,
+    "page": 151,
+    "ruku": 122,
+    "hizbQuarter": 61,
+    "sajda": false
+  }
+]

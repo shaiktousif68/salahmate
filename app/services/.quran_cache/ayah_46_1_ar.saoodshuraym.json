@@ -1,0 +1,33 @@
+[
+  1787134149.9653366,
+  {
+    "number": 4511,
+    "audio": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/4511.mp3",
+    "audioSecondary": [],
+    "text": "بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ حمٓ",
+    "edition": {
+      "identifier": "ar.saoodshuraym",
+      "language": "ar",
+      "name": "سعود الشريم",
+      "englishName": "Saood bin Ibraaheem Ash-Shuraym",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 46,
+      "name": "سُورَةُ الأَحۡقَافِ",
+      "englishName": "Al-Ahqaf",
+      "englishNameTranslation": "The Dunes",
+      "numberOfAyahs": 35,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 26,
+    "manzil": 6,
+    "page": 502,
+    "ruku": 438,
+    "hizbQuarter": 201,
+    "sajda": false
+  }
+]

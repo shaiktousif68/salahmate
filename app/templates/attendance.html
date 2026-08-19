@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Salah Attendance - SalahMate{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Salah Attendance</h1>
+        <p class="text-muted">{{ selected_date.strftime('%A, %B %d, %Y') }}</p>
+    </div>
+    <div class="header-actions">
+        <form method="GET" action="{{ url_for('attendance.index') }}" class="date-selector-form">
+            <div class="form-group">
+                <label for="date-picker">Select Date:</label>
+                <input type="date"
+                       id="date-picker"
+                       name="date"
+                       value="{{ selected_date.isoformat() }}"
+                       min="{{ min_date }}"
+                       max="{{ max_date }}" onchange="this.form.submit()">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-mosque"></i> Daily Prayers</h2>
+        <div class="progress-info">
+            <span class="progress-text" id="progress-text">{{ attendance.total_completed if attendance else 0 }}/5 completed</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: {{ attendance.completion_percentage if attendance else 0 }}%"></div>
+            </div>
+        </div>
+    </div>
+    {% if is_editable %}
+    <div class="prayer-list">
+        {% for name in prayer_names %}
+        <div class="prayer-item" data-prayer="{{ name }}">
+            <div class="prayer-info">
+                <div class="prayer-name">{{ name }}</div>
+            </div>
+            {% if current_user.gender == 'female' %}
+            <div class="prayer-actions">
+                <button class="btn btn-sm btn-status {{ 'status-alone active' if prayer_status.get(name) == 'alone' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="alone" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-home"></i> At Home
+                </button>
+                <button class="btn btn-sm btn-status {{ 'status-qaza active' if prayer_status.get(name) == 'qaza' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="qaza" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-clock"></i> Qaza
+                </button>
+                <button class="btn btn-sm btn-status {{ 'status-missed active' if prayer_status.get(name) == 'missed' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="missed" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-times"></i> Missed
+                </button>
+                <button class="btn btn-sm btn-status {{ 'status-excused active' if prayer_status.get(name) == 'excused' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="excused" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-leaf"></i> Excused
+                </button>
+            </div>
+            {% else %}
+            <div class="prayer-actions">
+                <button class="btn btn-sm btn-status {{ 'status-jamaat active' if prayer_status.get(name) == 'jamaat' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="jamaat" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-users"></i> Jamaat
+                </button>
+                <button class="btn btn-sm btn-status {{ 'status-alone active' if prayer_status.get(name) == 'alone' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="alone" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-user"></i> Alone
+                </button>
+                <button class="btn btn-sm btn-status {{ 'status-qaza active' if prayer_status.get(name) == 'qaza' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="qaza" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-clock"></i> Qaza
+                </button>
+                <button class="btn btn-sm btn-status {{ 'status-missed active' if prayer_status.get(name) == 'missed' else 'btn-outline' }}"
+                        data-prayer="{{ name }}" data-status="missed" data-date="{{ selected_date.isoformat() }}">
+                    <i class="fas fa-times"></i> Missed
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="card-body">
+        <div class="locked-state">
+            <i class="fas fa-lock"></i>
+            <h3>Attendance Locked</h3>
+            {% if is_future %}
+                <p>Future attendance cannot be recorded.</p>
+            {% else %}
+                <p>Attendance cannot be recorded for dates before you started using the app.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/prayer.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - SalahMate{% endblock %}
+
+{% block content %}
+<div class="page-container settings-page">
+    <div class="page-header">
+        <div>
+            <span class="eyebrow">PROFILE & PREFERENCES</span>
+            <h1>Settings</h1>
+            <p>Manage your profile, location, and prayer calculation settings.</p>
+        </div>
+    </div>
+
+    <div class="card glass-panel settings-section">
+        <div class="settings-section-title">
+            <i class="fas fa-user"></i>
+            <h2>Profile Information</h2>
+        </div>
+        <form method="POST" action="{{ url_for('settings.index') }}">
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" id="full_name" name="full_name"
+                           value="{{ current_user.full_name or '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" value="{{ current_user.username }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" value="{{ current_user.email }}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" id="city" name="city" value="{{ current_user.city or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" value="{{ current_user.country or '' }}">
+                </div>
+                <div class="form-group">
+                    <label for="latitude">Latitude</label>
+                    <input type="text" id="latitude" name="latitude" value="{{ current_user.latitude or '' }}"
+                           placeholder="e.g. 21.4225">
+                </div>
+                <div class="form-group">
+                    <label for="longitude">Longitude</label>
+                    <input type="text" id="longitude" name="longitude" value="{{ current_user.longitude or '' }}"
+                           placeholder="e.g. 39.8262">
+                </div>
+                <div class="form-group full-width">
+                    <label for="calculation_method">Prayer Calculation Method</label>
+                    <select id="calculation_method" name="calculation_method">
+                        {% for method_id, method_name in methods %}
+                        <option value="{{ method_id }}" {% if current_user.calculation_method == method_id %}selected{% endif %}>
+                            {{ method_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Settings
+            </button>
+        </form>
+    </div>
+
+    <div class="card glass-panel settings-section">
+        <div class="settings-section-title">
+            <i class="fas fa-lock"></i>
+            <h2>Change Password</h2>
+        </div>
+        <form method="POST" action="{{ url_for('settings.change_password') }}">
+            <div class="settings-grid">
+                <div class="form-group">
+                    <label for="current_password">Current Password</label>
+                    <input type="password" id="current_password" name="current_password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new_password">New Password</label>
+                    <input type="password" id="new_password" name="new_password" required
+                           placeholder="Min 6 characters">
+                </div>
+                <div class="form-group full-width">
+                    <label for="confirm_password">Confirm New Password</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-key"></i> Change Password
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

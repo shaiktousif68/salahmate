@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - SalahMate{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Prayer Reports</h1>
+        <p class="text-muted">{{ start_date.strftime('%B %d, %Y') }} - {{ end_date.strftime('%B %d, %Y') }}</p>
+    </div>
+    <div class="header-actions">
+        <div class="filter-group">
+            <label for="days">Period:</label>
+            <select id="days" name="days" onchange="window.location.href = '?days=' + this.value">
+                <option value="7" {{ 'selected' if days == 7 }}>Last 7 days</option>
+                <option value="14" {{ 'selected' if days == 14 }}>Last 14 days</option>
+                <option value="30" {{ 'selected' if days == 30 }}>Last 30 days</option>
+                <option value="60" {{ 'selected' if days == 60 }}>Last 60 days</option>
+                <option value="90" {{ 'selected' if days == 90 }}>Last 90 days</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-percentage"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">{{ overall_percentage }}%</div>
+            <div class="stat-label">Overall Completion</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">{{ total_completed }}</div>
+            <div class="stat-label">Completed</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">{{ total_qaza }}</div>
+            <div class="stat-label">Qaza</div>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+        <div class="stat-info">
+            <div class="stat-value">{{ total_missed }}</div>
+            <div class="stat-label">Missed</div>
+        </div>
+    </div>
+</div>
+
+<div class="charts-grid">
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fas fa-chart-bar"></i> Daily Completion</h2>
+        </div>
+        <div class="chart-container">
+            <canvas id="dailyChart"></canvas>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h2><i class="fas fa-chart-pie"></i> Prayer Breakdown</h2>
+        </div>
+        <div class="chart-container">
+            <canvas id="prayerChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-chart-line"></i> Weekly Performance</h2>
+    </div>
+    <div class="chart-container">
+        <canvas id="weeklyChart"></canvas>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-list"></i> Prayer Statistics</h2>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Prayer</th>
+                    <th>Jamaat</th>
+                    <th>Alone</th>
+                    <th>Qaza</th>
+                    <th>Missed</th>
+                    <th>Completion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for name in prayer_names %}
+                {% set stats = prayer_stats.get(name, {'jamaat': 0, 'alone': 0, 'qaza': 0, 'missed': 0, 'percentage': 0}) %}
+                <tr>
+                    <td><strong>{{ name }}</strong></td>
+                    <td><span class="badge" style="background: rgba(16,185,129,0.15); color: var(--emerald-light);">{{ stats.jamaat }}</span></td>
+                    <td><span class="badge" style="background: rgba(59,130,246,0.15); color: var(--info);">{{ stats.alone }}</span></td>
+                    <td><span class="badge" style="background: rgba(245,158,11,0.15); color: var(--warning);">{{ stats.qaza }}</span></td>
+                    <td><span class="badge" style="background: rgba(239,68,68,0.15); color: var(--danger);">{{ stats.missed }}</span></td>
+                    <td>
+                        <div class="mini-progress">
+                            <div class="mini-progress-fill" style="width: {{ stats.percentage }}%"></div>
+                        </div>
+                        <span class="text-muted">{{ stats.percentage }}%</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const dailyData = {{ daily_data|tojson }};
+    const weeklyData = {{ weekly_data|tojson }};
+    const prayerData = {{ prayer_stats|tojson }};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+{% endblock %}

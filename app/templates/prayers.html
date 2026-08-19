@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Prayer Times - SalahMate{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Daily Dhikr Challenge — Tasbeeh counter section -->
+    <div class="card dhikr-card">
+        <div class="card-header">
+            <h2>
+                <i class="fas fa-moon"></i>
+                Daily Dhikr Challenge
+            </h2>
+            <span class="status-badge status-jamaat">Remember Allah throughout your day</span>
+        </div>
+        <div class="card-body">
+            <!-- Dhikr selection cards -->
+            <div class="dhikr-selector">
+                {% for key, meta in dhikr_options.items() %}
+                <button type="button"
+                        class="dhikr-option {% if loop.first %}active{% endif %}"
+                        data-dhikr="{{ key }}"
+                        data-name="{{ meta.name }}"
+                        data-arabic="{{ meta.arabic }}"
+                        aria-pressed="{% if loop.first %}true{% else %}false{% endif %}">
+                    <span class="dhikr-option-arabic">{{ meta.arabic }}</span>
+                    <span class="dhikr-option-name">{{ meta.name }}</span>
+                    <span class="dhikr-option-count" id="dhikr-option-count-{{ key }}">
+                        {{ dhikr_counts.get(key, 0) }} / {{ meta.target }}
+                    </span>
+                </button>
+                {% endfor %}
+            </div>
+
+            <!-- Main 3D circular counter -->
+            <div class="dhikr-counter-area">
+                <div class="dhikr-counter-display">
+                    <div class="dhikr-counter-title">
+                        <span class="dhikr-counter-arabic" id="dhikr-counter-arabic">
+                            سُبْحَانَ اللَّهِ
+                        </span>
+                        <span class="dhikr-counter-name" id="dhikr-counter-name">SubhanAllah</span>
+                    </div>
+
+                    <div class="dhikr-circle-wrap">
+                        <div class="dhikr-progress-ring" id="dhikr-progress-ring" style="--progress: 0%">
+                            <button type="button"
+                                    class="dhikr-counter-btn"
+                                    id="dhikr-counter-btn"
+                                    aria-label="Tap to count SubhanAllah">
+                                <span class="dhikr-count-number" id="dhikr-count-number">0</span>
+                                <span class="dhikr-count-target" id="dhikr-count-target">/ 100</span>
+                                <span class="dhikr-tap-hint" id="dhikr-tap-hint">TAP +1</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="dhikr-completion" id="dhikr-completion">
+                        <span id="dhikr-completion-text">✨ Complete your daily Dhikr</span>
+                    </div>
+                </div>
+
+                <div class="dhikr-actions">
+                    <button type="button" class="btn btn-outline btn-sm" id="dhikr-reset-btn">
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Salah & Rak'ahs — PRIMARY section (informational table, no DB) -->
+    <div class="card rakah-card rakah-card-primary">
+        <div class="card-header">
+            <h2>
+                <i class="fas fa-mosque"></i>
+                Daily Salah & Rak'ahs
+            </h2>
+            <span class="status-badge status-jamaat">Sunnah • Fard • Witr</span>
+        </div>
+        <div class="card-body">
+            <div class="rakah-table-wrap">
+                <table class="rakah-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Salah</th>
+                            <th scope="col">Before Fard</th>
+                            <th scope="col">Fard</th>
+                            <th scope="col">After Fard</th>
+                            <th scope="col">Witr</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="rakah-prayer-name">
+                                <span class="rakah-icon">🌅</span> Fajr
+                            </td>
+                            <td><span class="rakah-badge rakah-sunnah">2 Sunnah</span></td>
+                            <td><span class="rakah-badge rakah-fard">2 Fard</span></td>
+                            <td><span class="rakah-dash">—</span></td>
+                            <td><span class="rakah-dash">—</span></td>
+                        </tr>
+                        <tr>
+                            <td class="rakah-prayer-name">
+                                <span class="rakah-icon">☀️</span> Dhuhr
+                            </td>
+                            <td><span class="rakah-badge rakah-sunnah">4 Sunnah</span></td>
+                            <td><span class="rakah-badge rakah-fard">4 Fard</span></td>
+                            <td><span class="rakah-badge rakah-sunnah">2 Sunnah</span></td>
+                            <td><span class="rakah-dash">—</span></td>
+                        </tr>
+                        <tr>
+                            <td class="rakah-prayer-name">
+                                <span class="rakah-icon">🌤️</span> Asr
+                            </td>
+                            <td><span class="rakah-badge rakah-sunnah">4 Sunnah</span></td>
+                            <td><span class="rakah-badge rakah-fard">4 Fard</span></td>
+                            <td><span class="rakah-dash">—</span></td>
+                            <td><span class="rakah-dash">—</span></td>
+                        </tr>
+                        <tr>
+                            <td class="rakah-prayer-name">
+                                <span class="rakah-icon">🌇</span> Maghrib
+                            </td>
+                            <td><span class="rakah-dash">—</span></td>
+                            <td><span class="rakah-badge rakah-fard">3 Fard</span></td>
+                            <td><span class="rakah-badge rakah-sunnah">2 Sunnah</span></td>
+                            <td><span class="rakah-dash">—</span></td>
+                        </tr>
+                        <tr>
+                            <td class="rakah-prayer-name">
+                                <span class="rakah-icon">🌙</span> Isha
+                            </td>
+                            <td><span class="rakah-badge rakah-sunnah">4 Sunnah</span></td>
+                            <td><span class="rakah-badge rakah-fard">4 Fard</span></td>
+                            <td><span class="rakah-badge rakah-sunnah">2 Sunnah</span></td>
+                            <td><span class="rakah-badge rakah-witr">3 Witr</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Prayer Times — secondary section (existing dynamic functionality) -->
+    <div class="text-center mb-4 prayer-times-heading">
+        <h1>Prayer Times</h1>
+        <p class="text-muted">
+            {{ today.strftime('%A, %B %d, %Y') }}
+        </p>
+    </div>
+
+    <div class="row g-4">
+
+        {% for name in ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'] %}
+
+        <div class="col-12 col-sm-6 col-lg-4">
+
+            <div class="card h-100 shadow-sm prayer-time-card">
+
+                <div class="card-body text-center">
+
+                    <h4 class="mb-3">
+                        {{ name }}
+                    </h4>
+
+                    <div class="display-6 fw-bold">
+                        {{ prayer_times.get(name, '--:--') }}
+                    </div>
+
+                    <small class="text-muted">
+                        {% if name == 'Sunrise' %}
+                            Sunrise
+                        {% else %}
+                            Prayer Time
+                        {% endif %}
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/dhikr.js') }}"></script>
+{% endblock %}

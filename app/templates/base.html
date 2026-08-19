@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SalahMate{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Scheherazade+New:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body hx-ext="preload">
+    <!-- Three.js Background -->
+    <div id="particles-bg"></div>
+
+    <!-- Islamic Pattern Overlay -->
+    <div class="pattern-overlay"></div>
+
+    {% if current_user.is_authenticated %}
+    <!-- Desktop Sidebar -->
+    <nav class="sidebar glass-panel">
+        <div class="sidebar-header">
+            <h1 class="logo">
+                <span class="logo-icon">🕌</span>
+                <span>SalahMate</span>
+            </h1>
+        </div>
+        <ul class="nav-links">
+            <li>
+                <a href="{{ url_for('dashboard.home') }}" class="{{ 'active' if request.endpoint == 'dashboard.home' }}">
+                    <i class="fas fa-home"></i> <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('attendance.index') }}" class="{{ 'active' if request.endpoint == 'attendance.index' }}">
+                    <i class="fas fa-clipboard-check"></i> <span>Attendance</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('prayer.index') }}" class="{{ 'active' if request.endpoint in ['prayer.index', 'prayer.history', 'prayer.calendar', 'prayer.missed'] }}">
+                    <i class="fas fa-mosque"></i> <span>Salah</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('prayer.missed') }}" class="{{ 'active' if request.endpoint == 'prayer.missed' }}">
+                    <i class="fas fa-exclamation-circle"></i> <span>Missed Salah</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('prayer.calendar') }}" class="{{ 'active' if request.endpoint == 'prayer.calendar' }}">
+                    <i class="fas fa-calendar-alt"></i> <span>Calendar</span>
+                </a>
+            </li>
+            <li class="nav-item-with-submenu">
+                <div class="nav-link-parent {{ 'active' if request.endpoint and request.endpoint.startswith('quran') }}">
+                    <i class="fas fa-book-open"></i> <span>Quran</span>
+                </div>
+                <ul class="submenu">
+                    <li>
+                        <a href="{{ url_for('quran.index', view='surah') }}" class="{{ 'active' if request.args.get('view') == 'surah' }}">
+                            <i class="fas fa-book-open"></i> <span>Surah</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('quran.index', view='para') }}" class="{{ 'active' if request.args.get('view') == 'para' }}">
+                            <i class="fas fa-book"></i> <span>Para / Juz</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="{{ url_for('reports.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('reports') }}">
+                    <i class="fas fa-chart-line"></i> <span>Reports</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('settings.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('settings') }}">
+                    <i class="fas fa-cog"></i> <span>Settings</span>
+                </a>
+            </li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">{{ current_user.username[0]|upper }}</div>
+                <div class="user-details">
+                    <span class="user-name">{{ current_user.full_name or current_user.username }}</span>
+                    <span class="user-email">{{ current_user.email }}</span>
+                </div>
+            </div>
+            <a href="{{ url_for('auth.logout') }}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+    {% else %}
+    <main class="auth-main">
+    {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} glass-panel">
+                            {{ message }}
+                            <button class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main> <!-- This is either .main-content or .auth-main -->
+
+    {% if current_user.is_authenticated %}
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav glass-panel">
+        <a href="{{ url_for('dashboard.home') }}" class="{{ 'active' if request.endpoint == 'dashboard.home' }}">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="{{ url_for('prayer.index') }}" class="{{ 'active' if request.endpoint in ['prayer.index', 'prayer.history', 'prayer.calendar'] }}">
+            <i class="fas fa-mosque"></i>
+            <span>Salah</span>
+        </a>
+        <a href="{{ url_for('quran.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('quran') }}">
+            <i class="fas fa-book-open"></i>
+            <span>Quran</span>
+        </a>
+        <a href="{{ url_for('reports.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('reports') }}">
+            <i class="fas fa-chart-line"></i>
+            <span>Reports</span>
+        </a>
+        <a href="{{ url_for('settings.index') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('settings') }}">
+            <i class="fas fa-cog"></i>
+            <span>Settings</span>
+        </a>
+    </nav>
+    {% endif %}
+
+    <!-- Heavy scripts are deferred to prevent blocking page load -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+    <!-- dashboard.js contains global utilities like background animation and toasts -->
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}" defer></script>
+    <!-- navigation.js provides SPA-like navigation -->
+    <script src="{{ url_for('static', filename='js/navigation.js') }}" defer></script>
+    <div id="script-container">
+        {% block extra_js %}{% endblock %}
+    </div>
+</body>
+</html>

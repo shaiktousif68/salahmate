@@ -1,0 +1,33 @@
+[
+  1786903302.89609,
+  {
+    "number": 1,
+    "audio": "https://cdn.islamic.network/quran/audio/64/ar.saoodshuraym/1.mp3",
+    "audioSecondary": [],
+    "text": "﻿بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ",
+    "edition": {
+      "identifier": "ar.saoodshuraym",
+      "language": "ar",
+      "name": "سعود الشريم",
+      "englishName": "Saood bin Ibraaheem Ash-Shuraym",
+      "format": "audio",
+      "type": "versebyverse",
+      "direction": null
+    },
+    "surah": {
+      "number": 1,
+      "name": "سُورَةُ ٱلْفَاتِحَةِ",
+      "englishName": "Al-Faatiha",
+      "englishNameTranslation": "The Opening",
+      "numberOfAyahs": 7,
+      "revelationType": "Meccan"
+    },
+    "numberInSurah": 1,
+    "juz": 1,
+    "manzil": 1,
+    "page": 1,
+    "ruku": 1,
+    "hizbQuarter": 1,
+    "sajda": false
+  }
+]

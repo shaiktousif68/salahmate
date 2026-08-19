@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Prayer Calendar - SalahMate{% endblock %}
+
+{% block content %}
+
+<div class="page-container">
+
+    <div class="page-header calendar-header">
+
+        <div>
+            <span class="eyebrow">PRAYER TRACKING</span>
+            <h1>Prayer Calendar</h1>
+            <p>Track your five daily prayers throughout the month.</p>
+        </div>
+
+        <div class="calendar-navigation">
+
+            {% if month == 1 %}
+                {% set prev_month = 12 %}
+                {% set prev_year = year - 1 %}
+            {% else %}
+                {% set prev_month = month - 1 %}
+                {% set prev_year = year %}
+            {% endif %}
+
+            {% if month == 12 %}
+                {% set next_month = 1 %}
+                {% set next_year = year + 1 %}
+            {% else %}
+                {% set next_month = month + 1 %}
+                {% set next_year = year %}
+            {% endif %}
+
+            <a
+                href="{{ url_for('prayer.calendar', year=prev_year, month=prev_month) }}"
+                class="calendar-nav-btn">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+
+            <div class="calendar-month">
+                <i class="fas fa-calendar-alt"></i>
+                <span>{{ start_date.strftime('%B %Y') }}</span>
+            </div>
+
+            <a
+                href="{{ url_for('prayer.calendar', year=next_year, month=next_month) }}"
+                class="calendar-nav-btn">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="glass-panel calendar-legend">
+
+        <span>
+            <i class="legend-dot completed"></i>
+            Completed
+        </span>
+
+        <span>
+            <i class="legend-dot qaza"></i>
+            Qaza
+        </span>
+
+        <span>
+            <i class="legend-dot missed"></i>
+            Missed
+        </span>
+
+        <span>
+            <i class="legend-dot partial"></i>
+            Partial
+        </span>
+
+    </div>
+
+
+    <div class="calendar-card glass-panel">
+
+        <div class="calendar-grid">
+
+            {% for day_name in ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'] %}
+
+            <div class="calendar-day-header">
+                {{ day_name }}
+            </div>
+
+            {% endfor %}
+
+
+            {% for day in calendar_days %}
+
+                {% if day.day_type == 'empty' %}
+
+                    <div class="calendar-day empty"></div>
+
+                {% else %}
+
+                    <div
+                        class="calendar-day
+                        {% if day.is_today %}today{% endif %}
+                        {% if day.is_future %}future{% endif %}
+                        {% if day.is_before_start %}before-start{% endif %}"
+                    >
+
+                        <div class="calendar-day-top">
+
+                            <span class="day-number">
+                                {{ day.day_number }}
+                            </span>
+
+                            {% if day.is_today %}
+                                <span class="today-badge">TODAY</span>
+                            {% endif %}
+
+                        </div>
+
+
+                        {% if day.attendance_summary %}
+
+                            {% set percentage =
+                                day.attendance_summary.completion_percentage
+                            %}
+
+                            <div class="calendar-progress">
+
+                                <div
+                                    class="progress-ring"
+                                    style="--progress: {{ percentage }}%;"
+                                >
+                                    <span>{{ percentage|int }}%</span>
+                                </div>
+
+                            </div>
+
+                            <div class="prayer-mini-grid">
+
+                                {% for prayer_name in prayer_names %}
+
+                                    {% set status =
+                                        day.prayers.get(
+                                            prayer_name,
+                                            'not_recorded'
+                                        )
+                                    %}
+
+                                    <div
+                                        class="prayer-mini
+                                        status-{{ status }}"
+                                        title="{{ prayer_name }}: {{ status|replace('_', ' ')|title }}"
+                                    >
+                                        {{ prayer_name[0] }}
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <div class="calendar-count">
+
+                                {{ day.attendance_summary.total_completed or 0 }}/5
+
+                                {% if day.attendance_summary.total_qaza %}
+                                    <span class="qaza-count">
+                                        {{ day.attendance_summary.total_qaza }} Q
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        {% elif day.is_future %}
+
+                            <div class="calendar-no-data">
+                                <i class="fas fa-lock"></i>
+                                Future
+                            </div>
+
+                        {% elif day.is_before_start %}
+
+                            <div class="calendar-no-data">
+                                No data
+                            </div>
+
+                        {% else %}
+
+                            <div class="calendar-no-data">
+                                <i class="fas fa-minus-circle"></i>
+                                Not recorded
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <div class="calendar-info glass-panel">
+
+        <div>
+            <i class="fas fa-info-circle"></i>
+
+            <strong>Prayer Tracking</strong>
+
+            <span>5 prayers daily</span>
+        </div>
+
+        <div>
+            <i class="fas fa-hand-pointer"></i>
+
+            <strong>How it works</strong>
+
+            <span>Track your daily Salah attendance</span>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

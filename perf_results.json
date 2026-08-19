@@ -1,0 +1,106 @@
+{
+  "Dashboard": {
+    "wall_ms": 5.3,
+    "db_queries": 6,
+    "db_ms": 3645.3,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 11933
+  },
+  "Salah": {
+    "wall_ms": 5.4,
+    "db_queries": 2,
+    "db_ms": 1223.2,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 18607
+  },
+  "Attendance": {
+    "wall_ms": 8.3,
+    "db_queries": 5,
+    "db_ms": 3097.0,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 12305
+  },
+  "Missed Salah": {
+    "wall_ms": 5.0,
+    "db_queries": 3,
+    "db_ms": 1876.6,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 8532
+  },
+  "Calendar": {
+    "wall_ms": 11.5,
+    "db_queries": 3,
+    "db_ms": 1895.8,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 78019
+  },
+  "Quran - Surah list": {
+    "wall_ms": 6.9,
+    "db_queries": 3,
+    "db_ms": 1927.8,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 69357
+  },
+  "Quran - Para list": {
+    "wall_ms": 2.4,
+    "db_queries": 3,
+    "db_ms": 1946.3,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 19243
+  },
+  "Quran - Open Surah 1": {
+    "wall_ms": 8.6,
+    "db_queries": 3,
+    "db_ms": 1955.8,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 34159
+  },
+  "Quran - Open Surah 2": {
+    "wall_ms": 14.4,
+    "db_queries": 3,
+    "db_ms": 1982.0,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 1015550
+  },
+  "Quran - Open Para 1": {
+    "wall_ms": 14.2,
+    "db_queries": 3,
+    "db_ms": 2027.5,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 520297
+  },
+  "Reports": {
+    "wall_ms": 12.2,
+    "db_queries": 4,
+    "db_ms": 2763.1,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 17043
+  },
+  "Settings": {
+    "wall_ms": 4.2,
+    "db_queries": 1,
+    "db_ms": 700.4,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 11218
+  },
+  "Daily Dhikr": {
+    "wall_ms": 2.1,
+    "db_queries": 2,
+    "db_ms": 1409.9,
+    "api_calls": 0,
+    "api_ms": 0.0,
+    "bytes": 18607
+  }
+}
