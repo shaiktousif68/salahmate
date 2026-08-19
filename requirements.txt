@@ -11,3 +11,4 @@ python-dotenv==1.0.1
 pytest==8.2.2
 gunicorn==22.0.0
 Flask-Mail==0.10.0
+psycopg2-binary==2.9.12
