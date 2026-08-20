@@ -1,3 +1,4 @@
+
 import os
 from dotenv import load_dotenv
 
@@ -23,16 +24,24 @@ class Config:
     # Quran API configuration
     QURAN_API_URL = 'https://api.alquran.cloud/v1'
 
-    # Flask-Mail configuration (read from environment variables)
+    # Flask-Mail configuration
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
     MAIL_PORT = int(os.environ.get('MAIL_PORT', 587))
     MAIL_USE_TLS = os.environ.get('MAIL_USE_TLS', '1') == '1'
     MAIL_USE_SSL = os.environ.get('MAIL_USE_SSL', '0') == '1'
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME', '')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', '')
-    MAIL_DEFAULT_SENDER = os.environ.get('MAIL_DEFAULT_SENDER', 'SalahMate <noreply@salahmate.app>')
+    MAIL_DEFAULT_SENDER = os.environ.get(
+        'MAIL_DEFAULT_SENDER',
+        'SalahMate <noreply@salahmate.app>'
+    )
     MAIL_MAX_EMAILS = None
     MAIL_SUPPRESS_SEND = os.environ.get('MAIL_SUPPRESS_SEND', '0') == '1'
+
+    # Brevo API configuration
+    BREVO_API_KEY = os.environ.get('BREVO_API_KEY', '')
+    BREVO_SENDER_EMAIL = os.environ.get('BREVO_SENDER_EMAIL', '')
+    BREVO_SENDER_NAME = os.environ.get('BREVO_SENDER_NAME', 'SalahMate')
 
 
 class DevelopmentConfig(Config):
@@ -59,3 +68,4 @@ config = {
     'testing': TestingConfig,
     'default': DevelopmentConfig
 }
+
