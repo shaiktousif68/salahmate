@@ -8,33 +8,36 @@
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
     <title>{% block title %}SalahMate{% endblock %}</title>
-<!-- PWA / Mobile App -->
-<meta name="theme-color" content="#0f172a">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SalahMate">
 
-<!-- App Manifest -->
-<link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <!-- PWA / Mobile App -->
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SalahMate">
 
-<!-- App Icons -->
-<link rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="{{ url_for('static', filename='images/icon-192.png') }}">
+    <!-- App Manifest -->
+    <link rel="manifest"
+          href="{{ url_for('static', filename='manifest.json') }}">
 
-<link rel="icon"
-      type="image/png"
-      sizes="512x512"
-      href="{{ url_for('static', filename='images/icon-512.png') }}">
+    <!-- App Icons -->
+    <link rel="icon"
+          type="image/png"
+          sizes="192x192"
+          href="{{ url_for('static', filename='images/icon-192.png') }}">
 
-<link rel="apple-touch-icon"
-      href="{{ url_for('static', filename='images/icon-192.png') }}">
+    <link rel="icon"
+          type="image/png"
+          sizes="512x512"
+          href="{{ url_for('static', filename='images/icon-512.png') }}">
 
-<!-- Main CSS -->
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="apple-touch-icon"
+          href="{{ url_for('static', filename='images/icon-192.png') }}">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +53,19 @@
 </head>
 
 <body hx-ext="preload">
+
+    <!-- SalahMate App Splash Screen -->
+    <div id="salahmate-splash">
+        <div class="splash-content">
+            <div class="splash-icon">🕌</div>
+            <h1>SalahMate</h1>
+            <p>Your Prayer Companion</p>
+
+            <div class="splash-loader"></div>
+
+            <span>Loading SalahMate...</span>
+        </div>
+    </div>
 
     <!-- Background -->
     <div id="particles-bg"></div>
@@ -321,6 +337,23 @@
                 });
             });
         }
+    </script>
+
+    <!-- SalahMate Splash Screen -->
+    <script>
+        window.addEventListener("load", function () {
+            const splash = document.getElementById("salahmate-splash");
+
+            if (splash) {
+                setTimeout(function () {
+                    splash.classList.add("hide");
+
+                    setTimeout(function () {
+                        splash.remove();
+                    }, 500);
+                }, 300);
+            }
+        });
     </script>
 
 </body>
