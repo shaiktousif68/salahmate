@@ -13,7 +13,7 @@ quran_bp = Blueprint('quran', __name__)
 @login_required
 def index():
     """Quran main page with surah/para selection."""
-    view = request.args.get('view', None)
+    view = request.args.get('view', 'surah')
     query = request.args.get('q', '').lower().strip()
     surahs = []
     paras = []
