@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.salahmate.app",
+      "sha256_cert_fingerprints": [
+        "38:A0:C8:FD:9D:C2:17:A5:7D:CD:A1:C5:A8:4F:15:11:AF:5A:A3:72:09:31:6A:95:63:5E:8D:45:17:4F:75:F7"
+      ]
+    }
+  }
+]
