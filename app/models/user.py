@@ -13,10 +13,10 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     full_name = db.Column(db.String(120))
     gender = db.Column(db.String(10), nullable=False, server_default='male') # male, female
-    city = db.Column(db.String(100), default='Mecca')
-    country = db.Column(db.String(100), default='Saudi Arabia')
-    latitude = db.Column(db.Float, default=21.4225)
-    longitude = db.Column(db.Float, default=39.8262)
+    city = db.Column(db.String(100), default='Madanapalle')
+    country = db.Column(db.String(100), default='India')
+    latitude = db.Column(db.Float, default=13.929)
+    longitude = db.Column(db.Float, default=78.534)
     calculation_method = db.Column(db.Integer, default=4)  # Umm Al-Qura University
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

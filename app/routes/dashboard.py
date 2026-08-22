@@ -138,3 +138,22 @@ def countdown():
         'next_prayer': next_prayer,
         'next_prayer_time': next_prayer_time
     })
+@dashboard_bp.route('/api/dashboard', methods=['GET'])
+def api_dashboard():
+    return jsonify({
+        "greeting": "Assalamu Alaikum",
+        "weekly_percentage": 0,
+        "streak": 0,
+        "total_completed_week": 0,
+        "total_qaza_week": 0,
+        "total_missed_week": 0,
+        "current_para": 1,
+        "total_readings": 0,
+        "prayers": {
+            "Fajr": "Pending",
+            "Dhuhr": "Pending",
+            "Asr": "Pending",
+            "Maghrib": "Pending",
+            "Isha": "Pending"
+        }
+    })

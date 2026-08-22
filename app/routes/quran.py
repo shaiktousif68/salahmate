@@ -1,6 +1,6 @@
 from datetime import datetime
 import requests
-from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, Response
+from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, Response, make_response
 from flask_login import login_required, current_user
 from app import db
 from app.models.quran import QuranReading, Bookmark
@@ -139,7 +139,13 @@ def para(para_number):
     if para_data:
         translation_map = para_data.get('translation_map', {})
 
-    return render_template(
+    # The reader HTML must NEVER be heuristically cached by the browser:
+    # SPA navigation fetches these pages per-URL (navigation.js uses fetch()),
+    # and a stale cached HTML page (e.g. captured before the 3D audio player
+    # was deployed) would render in place of the current 3D player UI for
+    # whichever translation URL was cached. The audio player UI is identical
+    # for all translations — this header keeps it that way.
+    resp = make_response(render_template(
         'quran/para.html',
         target_surah=target_surah,
         target_ayah=target_ayah,
@@ -155,7 +161,9 @@ def para(para_number):
         last_read_ayah=last_read_ayah,
         para_bookmarks=para_bookmarks, # Pass bookmarks specific to this para
         bookmarked_ayahs=bookmarked_ayahs
-    )
+    ))
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    return resp
 
 
 @quran_bp.route('/quran/surah/<int:surah_number>')
@@ -224,7 +232,13 @@ def surah(surah_number):
                     if ayah_num is not None:
                         translation_map[str(ayah_num)] = t_ayah.get('text')
 
-    return render_template(
+    # The reader HTML must NEVER be heuristically cached by the browser:
+    # SPA navigation fetches these pages per-URL (navigation.js uses fetch()),
+    # and a stale cached HTML page (e.g. captured before the 3D audio player
+    # was deployed) would render in place of the current 3D player UI for
+    # whichever translation URL was cached. The audio player UI is identical
+    # for all translations — this header keeps it that way.
+    resp = make_response(render_template(
         'quran/reader.html',
         surah=surah_full_data, # Pass the full surah data with ayahs
         surah_meta=surah_data, # Keep meta data for header if needed
@@ -236,7 +250,9 @@ def surah(surah_number):
         last_read_ayah=last_read_ayah,
         bookmarked_ayahs=bookmarked_ayahs,
         target_ayah=target_ayah
-    )
+    ))
+    resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate'
+    return resp
 
 
 @quran_bp.route('/quran/ayah/<int:surah_number>/<int:ayah_number>')

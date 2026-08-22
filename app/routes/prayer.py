@@ -17,32 +17,25 @@ STATUS_VALUES = ['jamaat', 'alone', 'qaza', 'missed', 'not_recorded', 'excused']
 DHIKR_NAMES = {
     'subhanallah': {
         'arabic': 'سُبْحَانَ اللَّهِ',
-        'name': 'SubhanAllah',
-        'target': 100
+        'name': 'SubhanAllah'
     },
     'alhamdulillah': {
         'arabic': 'الْحَمْدُ لِلَّهِ',
-        'name': 'Alhamdulillah',
-        'target': 100
+        'name': 'Alhamdulillah'
     },
     'allahuakbar': {
         'arabic': 'اللَّهُ أَكْبَرُ',
-        'name': 'Allahu Akbar',
-        'target': 100
+        'name': 'Allahu Akbar'
     },
     'astaghfirullah': {
         'arabic': 'أَسْتَغْفِرُ اللَّهَ',
-        'name': 'Astaghfirullah',
-        'target': 100
+        'name': 'Astaghfirullah'
     },
     'lailahaillallah': {
         'arabic': 'لَا إِلَٰهَ إِلَّا اللَّهُ',
-        'name': 'La ilaha illallah',
-        'target': 100
+        'name': 'La ilaha illallah'
     },
 }
-
-DHIKR_MAX_COUNT = 100
 
 
 def get_or_create_attendance(user_id, date_obj):
@@ -132,8 +125,7 @@ def index():
         prayer_times=formatted_times,
         today=today,
         dhikr_counts=dhikr_counts,
-        dhikr_options=DHIKR_NAMES,
-        dhikr_max=DHIKR_MAX_COUNT
+        dhikr_options=DHIKR_NAMES
     )
 
 
@@ -154,9 +146,17 @@ def _get_or_create_dhikr(user_id, date_obj, dhikr_key):
 @prayer_bp.route('/prayers/dhikr/increment', methods=['POST'])
 @login_required
 def dhikr_increment():
-    """Increment today's count for a Dhikr by 1 (capped at 100)."""
+    """Increment today's count for a Dhikr by 1 (no upper limit).
+
+    Also accepts an optional absolute ``count`` value. When provided, the
+    stored count is set to ``max(current, count)`` — it can NEVER decrease.
+    This makes the endpoint safe for debounced saves and page-unload
+    flushes, so a newer database value is never overwritten by an older
+    client value.
+    """
     data = request.get_json() or {}
     dhikr_key = data.get('dhikr', '').strip()
+    absolute_count = data.get('count')
 
     if dhikr_key not in DHIKR_NAMES:
         return jsonify({'success': False, 'error': 'Invalid Dhikr'}), 400
@@ -164,16 +164,26 @@ def dhikr_increment():
     today = date.today()
     record = _get_or_create_dhikr(current_user.id, today, dhikr_key)
 
-    if record.count < DHIKR_MAX_COUNT:
-        record.count += 1
+    if absolute_count is not None:
+        # Absolute-count save (debounced / page-unload flush).
+        # Never decrease the stored count — only ever raise it.
         try:
-            db.session.commit()
-            return jsonify({'success': True, 'count': record.count, 'completed': record.count >= DHIKR_MAX_COUNT})
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({'success': False, 'error': str(e)}), 500
+            absolute_count = int(absolute_count)
+        except (ValueError, TypeError):
+            return jsonify({'success': False, 'error': 'Invalid count'}), 400
 
-    return jsonify({'success': True, 'count': record.count, 'completed': True})
+        if absolute_count > record.count:
+            record.count = absolute_count
+    else:
+        # Per-tap increment (no upper limit).
+        record.count += 1
+
+    try:
+        db.session.commit()
+        return jsonify({'success': True, 'count': record.count})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 
 @prayer_bp.route('/prayers/dhikr/reset', methods=['POST'])
@@ -207,7 +217,7 @@ def dhikr_state():
     records = Dhikr.query.filter_by(user_id=current_user.id, date=today).all()
     for record in records:
         counts[record.dhikr] = record.count
-    return jsonify({'success': True, 'counts': counts, 'max': DHIKR_MAX_COUNT})
+    return jsonify({'success': True, 'counts': counts})
 
 
 @prayer_bp.route('/prayers/history')

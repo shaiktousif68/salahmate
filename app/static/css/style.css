@@ -458,7 +458,8 @@ a:hover {
 }
 
 .nav-item-with-submenu:hover .submenu,
-.nav-item-with-submenu.active .submenu {
+.nav-item-with-submenu.active .submenu,
+.nav-item-with-submenu.open .submenu {
     max-height: 200px;
 }
 
@@ -2989,6 +2990,7 @@ a:hover {
    ========================================================= */
 
 @media (max-width: 900px) {
+
     .calendar-day {
         min-height: 105px;
     }
@@ -3002,7 +3004,13 @@ a:hover {
     }
 }
 
+
+/* =========================================================
+   MOBILE - 650px
+   ========================================================= */
+
 @media (max-width: 650px) {
+
     .calendar-card {
         padding: 0.75rem;
     }
@@ -3090,7 +3098,13 @@ a:hover {
     }
 }
 
+
+/* =========================================================
+   MOBILE - 450px
+   ========================================================= */
+
 @media (max-width: 450px) {
+
     .calendar-day-header {
         font-size: 0.6rem;
     }
@@ -3111,22 +3125,89 @@ a:hover {
         margin-top: 0.3rem;
     }
 }
-/* =========================================
-   SalahMate App Splash Screen
-   ========================================= */
+
+
+/* =========================================================
+   SalahMate Professional App Splash Screen
+   ========================================================= */
 
 #salahmate-splash {
     position: fixed;
     inset: 0;
     z-index: 999999;
+
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0f172a;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% 42%,
+            rgba(16, 185, 129, 0.12) 0%,
+            rgba(16, 185, 129, 0.04) 25%,
+            transparent 55%
+        ),
+        #0f172a;
+
     opacity: 1;
     visibility: visible;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    pointer-events: auto;
+
+    transition:
+        opacity 0.6s ease,
+        visibility 0.6s ease;
 }
+
+
+/* Soft background glow */
+
+#salahmate-splash::before {
+    content: "";
+
+    position: absolute;
+
+    width: 280px;
+    height: 280px;
+
+    border-radius: 50%;
+
+    background: rgba(16, 185, 129, 0.08);
+
+    filter: blur(80px);
+
+    animation: splashGlow 3s ease-in-out infinite;
+
+    pointer-events: none;
+}
+
+
+/* Decorative circle */
+
+#salahmate-splash::after {
+    content: "";
+
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+
+    border: 1px solid rgba(16, 185, 129, 0.08);
+
+    border-radius: 50%;
+
+    animation: splashOrbit 8s linear infinite;
+
+    pointer-events: none;
+}
+
+
+/* Hide splash */
 
 #salahmate-splash.hide {
     opacity: 0;
@@ -3134,57 +3215,442 @@ a:hover {
     pointer-events: none;
 }
 
+
+/* =========================================================
+   Splash Content
+   ========================================================= */
+
 .splash-content {
+    position: relative;
+    z-index: 2;
+
+    width: min(90%, 420px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     text-align: center;
+
     color: #ffffff;
+
+    animation: splashAppear 0.8s ease-out both;
 }
 
+
+/* =========================================================
+   Splash Icon
+   ========================================================= */
+
 .splash-icon {
-    font-size: 70px;
+    width: 100px;
+    height: 100px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 22px;
+
+    font-size: 58px;
     line-height: 1;
-    margin-bottom: 18px;
-    animation: splashPulse 1.5s ease-in-out infinite;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16, 185, 129, 0.18),
+            rgba(15, 23, 42, 0.65)
+        );
+
+    border: 1px solid rgba(16, 185, 129, 0.22);
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.25),
+        0 0 35px rgba(16, 185, 129, 0.12);
+
+    animation:
+        splashIconFloat 2.8s ease-in-out infinite,
+        splashIconGlow 2.8s ease-in-out infinite;
 }
+
+
+/* =========================================================
+   App Name
+   ========================================================= */
 
 .splash-content h1 {
     margin: 0;
-    font-size: 34px;
+
+    color: #ffffff;
+
+    font-size: clamp(2rem, 8vw, 2.5rem);
+
     font-weight: 700;
+
+    line-height: 1.15;
+
+    letter-spacing: -0.04em;
+
+    text-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.25);
 }
+
+
+/* =========================================================
+   Tagline
+   ========================================================= */
 
 .splash-content p {
-    margin: 8px 0 25px;
-    font-size: 15px;
-    opacity: 0.8;
+    margin: 9px 0 28px;
+
+    color: rgba(255, 255, 255, 0.62);
+
+    font-size: 0.9rem;
+
+    font-weight: 400;
+
+    line-height: 1.5;
 }
+
+
+/* =========================================================
+   Loading Spinner
+   ========================================================= */
 
 .splash-loader {
-    width: 42px;
-    height: 42px;
+    position: relative;
+
+    width: 44px;
+    height: 44px;
+
     margin: 0 auto 15px;
-    border: 4px solid rgba(255, 255, 255, 0.25);
-    border-top-color: #ffffff;
+
+    border: 3px solid rgba(255, 255, 255, 0.12);
+
+    border-top-color: #10b981;
+
+    border-right-color: rgba(16, 185, 129, 0.45);
+
     border-radius: 50%;
+
     animation: splashSpin 0.9s linear infinite;
+
+    box-shadow:
+        0 0 18px rgba(16, 185, 129, 0.15);
 }
+
+
+/* =========================================================
+   Loading Text
+   ========================================================= */
 
 .splash-content span {
-    font-size: 13px;
-    opacity: 0.7;
+    display: block;
+
+    color: rgba(255, 255, 255, 0.42);
+
+    font-size: 0.72rem;
+
+    font-weight: 400;
+
+    letter-spacing: 0.02em;
+
+    animation: splashTextPulse 1.6s ease-in-out infinite;
 }
 
+
+/* =========================================================
+   Splash Animations
+   ========================================================= */
+
+@keyframes splashAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+@keyframes splashIconFloat {
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-7px) scale(1.025);
+    }
+}
+
+
+@keyframes splashIconGlow {
+
+    0%,
+    100% {
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.25),
+            0 0 25px rgba(16, 185, 129, 0.08);
+    }
+
+    50% {
+        box-shadow:
+            0 20px 50px rgba(0, 0, 0, 0.25),
+            0 0 45px rgba(16, 185, 129, 0.18);
+    }
+}
+
+
 @keyframes splashSpin {
+
     to {
         transform: rotate(360deg);
     }
 }
 
-@keyframes splashPulse {
-    0%, 100% {
-        transform: scale(1);
+
+@keyframes splashTextPulse {
+
+    0%,
+    100% {
+        opacity: 0.45;
     }
 
     50% {
-        transform: scale(1.08);
+        opacity: 0.85;
+    }
+}
+
+
+@keyframes splashGlow {
+
+    0%,
+    100% {
+        transform: scale(0.9);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.15);
+        opacity: 0.9;
+    }
+}
+
+
+@keyframes splashOrbit {
+
+    from {
+        transform: rotate(0deg) scale(1);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: rotate(180deg) scale(1.12);
+        opacity: 0.8;
+    }
+
+    to {
+        transform: rotate(360deg) scale(1);
+        opacity: 0.4;
+    }
+}
+
+
+/* =========================================================
+   Splash Mobile
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    #salahmate-splash {
+        padding:
+            env(safe-area-inset-top)
+            1rem
+            env(safe-area-inset-bottom)
+            1rem;
+    }
+
+    .splash-content {
+        width: 100%;
+    }
+
+    .splash-icon {
+        width: 88px;
+        height: 88px;
+
+        font-size: 50px;
+
+        border-radius: 24px;
+
+        margin-bottom: 19px;
+    }
+
+    .splash-content h1 {
+        font-size: 2rem;
+    }
+
+    .splash-content p {
+        font-size: 0.82rem;
+        margin-bottom: 25px;
+    }
+
+    .splash-loader {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+
+/* =========================================================
+   Splash Small Phones
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+    .splash-icon {
+        width: 78px;
+        height: 78px;
+
+        font-size: 44px;
+
+        border-radius: 21px;
+    }
+
+    .splash-content h1 {
+        font-size: 1.8rem;
+    }
+
+    .splash-content p {
+        font-size: 0.78rem;
+    }
+}
+
+
+/* =========================================================
+   Accessibility
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .splash-content,
+    .splash-icon,
+    .splash-loader,
+    #salahmate-splash::before,
+    #salahmate-splash::after {
+        animation: none !important;
+    }
+
+    #salahmate-splash {
+        transition: opacity 0.2s ease;
+    }
+}
+/* =========================================================
+   Mobile Menu Toggle
+   ========================================================= */
+
+.mobile-menu-toggle {
+    display: none;
+    background: transparent;
+    border: 0;
+    color: #ffffff;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        color: #10b981 !important;
+        background: rgba(16, 185, 129, 0.15);
+        border: 2px solid #10b981;
+        border-radius: 10px;
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.35);
+        z-index: 9999;
+    }
+
+    .mobile-menu-toggle i {
+        color: #10b981 !important;
+    }
+}
+
+/* Mobile hamburger - keep visible outside hidden sidebar */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        position: fixed;
+        top: 80px;
+        left: 15px;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 46px;
+        height: 46px;
+        z-index: 99999;
+    }
+}
+
+/* FORCE MOBILE MENU BUTTON VISIBLE */
+@media (max-width: 768px) {
+    .mobile-menu-toggle {
+        display: flex !important;
+        position: fixed !important;
+        top: 15px !important;
+        right: 15px !important;
+        width: 48px !important;
+        height: 48px !important;
+        z-index: 99999 !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        color: #ffffff !important;
+        background: #10b981 !important;
+        border: 2px solid #ffffff !important;
+        border-radius: 12px !important;
+
+        font-size: 24px !important;
+        box-shadow: 0 4px 20px rgba(0,0,0,.5) !important;
+    }
+
+    .mobile-menu-toggle i {
+        display: block !important;
+        color: #ffffff !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        padding-top: 0.25rem !important;
+        margin-top: 0 !important;
+    }
+
+    .page-header h1 {
+        font-size: 1.5rem !important;
+        margin: 0 !important;
     }
 }

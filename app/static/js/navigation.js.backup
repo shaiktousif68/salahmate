@@ -1,0 +1,392 @@
+/**
+ * SalahMate SPA Navigation
+ * Intercepts navigation to provide an instant, single-page application experience
+ * with no loading indicators.
+ */
+(function() {
+    // isNavigating is informational (spinner state); true navigation races
+    // are resolved by aborting stale requests in navigate().
+    let isNavigating = false;
+
+    /**
+     * Manually executes scripts from a given container. This is necessary because
+     * scripts inserted via innerHTML are not run by the browser.
+     * @param {HTMLElement} container The element containing the new scripts.
+     */
+    const executeScriptsInContainer = (container) => {
+        if (!container) return;
+
+        const scripts = Array.from(container.querySelectorAll('script'));
+
+        scripts.forEach(oldScript => {
+            const newScript = document.createElement('script');
+
+            Array.from(oldScript.attributes).forEach(attr => {
+                newScript.setAttribute(attr.name, attr.value);
+            });
+
+            if (oldScript.innerHTML) {
+                newScript.innerHTML = oldScript.innerHTML;
+            }
+
+            oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+    };
+
+    /**
+     * Updates the active state on sidebar and mobile navigation links
+     * based on the current URL.
+     * @param {string} href The new URL.
+     */
+    const updateActiveNavLinks = (href) => {
+        const url = new URL(href, window.location.origin);
+        const pathname = url.pathname;
+
+        document
+            .querySelectorAll('.sidebar .active, .mobile-nav .active')
+            .forEach(el => el.classList.remove('active'));
+
+        document
+            .querySelectorAll('.sidebar a, .mobile-nav a')
+            .forEach(link => {
+                const linkUrl = new URL(link.href);
+
+                if (
+                    linkUrl.pathname === pathname &&
+                    linkUrl.search === url.search
+                ) {
+                    link.classList.add('active');
+
+                    // Activate Quran parent when Surah / Para is active.
+                    const parentSubmenu = link.closest('.submenu');
+
+                    if (parentSubmenu) {
+                        const parent = parentSubmenu.previousElementSibling;
+
+                        if (parent) {
+                            parent.classList.add('active');
+                        }
+
+                        const menuItem =
+                            link.closest('.nav-item-with-submenu');
+
+                        if (menuItem) {
+                            menuItem.classList.add('open');
+                        }
+                    }
+                }
+            });
+    };
+
+    /**
+     * Shows a small inline spinner on the clicked link.
+     */
+    const showLinkLoading = (link) => {
+        if (!link || link.hasAttribute('data-nav-loading')) return;
+
+        const originalHTML = link.innerHTML;
+
+        link.setAttribute('data-nav-loading', '1');
+        link.setAttribute('data-nav-original-html', originalHTML);
+
+        link.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        link.style.opacity = '0.75';
+        link.style.pointerEvents = 'none';
+    };
+
+    /**
+     * Restores the clicked link to its original state.
+     */
+    const clearLinkLoading = (link) => {
+        if (!link || !link.hasAttribute('data-nav-loading')) return;
+
+        const originalHTML =
+            link.getAttribute('data-nav-original-html');
+
+        if (originalHTML !== null) {
+            link.innerHTML = originalHTML;
+        }
+
+        link.removeAttribute('data-nav-loading');
+        link.removeAttribute('data-nav-original-html');
+
+        link.style.opacity = '';
+        link.style.pointerEvents = '';
+    };
+
+    /**
+     * Fetches a new page, parses its content, and updates the DOM
+     * without a full page reload.
+     */
+    let activeController = null;
+
+    const navigate = async (
+        href,
+        pushState = true,
+        clickedLink = null
+    ) => {
+
+        // Abort older navigation if a newer click happens.
+        if (activeController) {
+            activeController.abort();
+        }
+
+        const controller = new AbortController();
+
+        activeController = controller;
+        isNavigating = true;
+
+        showLinkLoading(clickedLink);
+
+        try {
+            const response = await fetch(href, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                signal: controller.signal
+            });
+
+            if (
+                response.redirected &&
+                new URL(response.url).pathname.includes('/login')
+            ) {
+                window.location.href = href;
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    `Server responded with status ${response.status}`
+                );
+            }
+
+            const html = await response.text();
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            const newMain =
+                doc.querySelector(
+                    'main.main-content, main.auth-main'
+                );
+
+            const currentMain =
+                document.querySelector(
+                    'main.main-content, main.auth-main'
+                );
+
+            if (!newMain || !currentMain) {
+                throw new Error(
+                    'Main content area not found.'
+                );
+            }
+
+            // Swap page content.
+            currentMain.replaceWith(newMain);
+
+            // Update page title.
+            document.title = doc.title;
+
+            // Swap and execute page-specific scripts.
+            const newScriptContainer =
+                doc.getElementById('script-container');
+
+            const currentScriptContainer =
+                document.getElementById('script-container');
+
+            if (
+                newScriptContainer &&
+                currentScriptContainer
+            ) {
+                currentScriptContainer.innerHTML =
+                    newScriptContainer.innerHTML;
+
+                executeScriptsInContainer(
+                    currentScriptContainer
+                );
+            }
+
+            // Update browser history.
+            if (pushState) {
+                history.pushState(
+                    { path: href },
+                    '',
+                    href
+                );
+            }
+
+            // Update active navigation state.
+            updateActiveNavLinks(href);
+
+            // Scroll new page to top.
+            window.scrollTo({
+                top: 0,
+                behavior: 'instant'
+            });
+
+        } catch (error) {
+
+            // Ignore aborted navigation.
+            if (
+                error &&
+                error.name === 'AbortError'
+            ) {
+                return;
+            }
+
+            console.error(
+                'SPA navigation failed, falling back to full page load:',
+                error
+            );
+
+            window.location.href = href;
+
+        } finally {
+
+            clearLinkLoading(clickedLink);
+
+            isNavigating = false;
+
+            if (activeController === controller) {
+                activeController = null;
+            }
+        }
+    };
+
+    // =========================================================
+    // Mobile Sidebar Toggle
+    // =========================================================
+
+    document.addEventListener('click', (event) => {
+
+        const toggle = event.target.closest('.mobile-menu-toggle');
+
+        if (!toggle) return;
+
+        const sidebar = document.querySelector('.sidebar');
+
+        if (!sidebar) return;
+
+        const isOpen = sidebar.classList.toggle('open');
+
+        toggle.setAttribute(
+            'aria-expanded',
+            isOpen ? 'true' : 'false'
+        );
+
+        toggle.setAttribute(
+            'aria-label',
+            isOpen ? 'Close menu' : 'Open menu'
+        );
+    });
+    // =========================================================
+    // Quran / Sidebar Submenu Toggle
+    // =========================================================
+
+    document.addEventListener('click', (event) => {
+
+        const parent =
+            event.target.closest('.nav-link-parent');
+
+        if (!parent) return;
+
+        const menuItem =
+            parent.closest('.nav-item-with-submenu');
+
+        if (!menuItem) return;
+
+        // Stop the general anchor navigation handler.
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Close other open submenus.
+        document
+            .querySelectorAll(
+                '.nav-item-with-submenu.open'
+            )
+            .forEach(item => {
+
+                if (item !== menuItem) {
+                    item.classList.remove('open');
+                }
+            });
+
+        // Toggle clicked submenu.
+        menuItem.classList.toggle('open');
+    });
+
+
+    // =========================================================
+    // Normal SPA Link Navigation
+    // =========================================================
+
+    document.addEventListener('click', (event) => {
+
+        const link =
+            event.target.closest('a');
+
+        const isIgnored =
+            !link ||
+            link.origin !== window.location.origin ||
+            link.hasAttribute('data-no-spa') ||
+            link.hasAttribute('download') ||
+            link.target === '_blank' ||
+            event.ctrlKey ||
+            event.metaKey ||
+            !['http:', 'https:'].includes(link.protocol) ||
+            (
+                link.pathname ===
+                window.location.pathname &&
+                link.hash
+            ) ||
+            link.pathname.includes('/logout');
+
+        if (isIgnored) return;
+
+        event.preventDefault();
+
+        navigate(
+            link.href,
+            true,
+            link
+        );
+    });
+
+
+    // =========================================================
+    // Browser Back / Forward
+    // =========================================================
+
+    window.addEventListener('popstate', (event) => {
+
+        if (
+            event.state &&
+            event.state.path
+        ) {
+            navigate(
+                event.state.path,
+                false
+            );
+        }
+
+    });
+
+
+    // =========================================================
+    // Initial Setup
+    // =========================================================
+
+    history.replaceState(
+        {
+            path: window.location.href
+        },
+        '',
+        window.location.href
+    );
+
+    updateActiveNavLinks(
+        window.location.href
+    );
+
+})();

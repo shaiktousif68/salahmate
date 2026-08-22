@@ -140,19 +140,41 @@ function initQuranReader() {
         }
     }
 
-    // Initialize translation select
-    const translationSelect = document.getElementById('translation-select');
-    if (translationSelect) {
-        translationSelect.addEventListener('change', function() {
-            // Reload page with selected translation
-            const url = new URL(window.location.href);
-            url.searchParams.set('translation', this.value);
-            window.location.href = url.toString();
-        });
+   // Initialize translation select
+const translationSelect = document.getElementById('translation-select');
 
-        // Save preference
-        localStorage.setItem('quranTranslation', translationSelect.value);
-    }
+if (translationSelect) {
+    translationSelect.addEventListener('change', function () {
+        const selectedTranslation = this.value;
+
+        // Save selected translation
+        localStorage.setItem(
+            'quranTranslation',
+            selectedTranslation
+        );
+
+        // Smooth transition before changing translation
+        document.body.classList.add('translation-changing');
+
+        // Allow the fade animation to start
+        setTimeout(function () {
+            const url = new URL(window.location.href);
+
+            url.searchParams.set(
+                'translation',
+                selectedTranslation
+            );
+
+            window.location.href = url.toString();
+        }, 180);
+    });
+
+    // Save current translation preference
+    localStorage.setItem(
+        'quranTranslation',
+        translationSelect.value
+    );
+}
 
     // Initialize 3-dot menu buttons
     document.querySelectorAll('.ayah-menu-btn').forEach(button => {

@@ -28,7 +28,7 @@
                     <span class="dhikr-option-arabic">{{ meta.arabic }}</span>
                     <span class="dhikr-option-name">{{ meta.name }}</span>
                     <span class="dhikr-option-count" id="dhikr-option-count-{{ key }}">
-                        {{ dhikr_counts.get(key, 0) }} / {{ meta.target }}
+                        {{ dhikr_counts.get(key, 0) }}
                     </span>
                 </button>
                 {% endfor %}
@@ -51,7 +51,7 @@
                                     id="dhikr-counter-btn"
                                     aria-label="Tap to count SubhanAllah">
                                 <span class="dhikr-count-number" id="dhikr-count-number">0</span>
-                                <span class="dhikr-count-target" id="dhikr-count-target">/ 100</span>
+                                <span class="dhikr-count-target" id="dhikr-count-target"></span>
                                 <span class="dhikr-tap-hint" id="dhikr-tap-hint">TAP +1</span>
                             </button>
                         </div>

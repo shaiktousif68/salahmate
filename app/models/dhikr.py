@@ -6,7 +6,7 @@ class Dhikr(db.Model):
     """Daily Dhikr (Tasbeeh) counter for a user.
 
     Each row stores one user's count for one Dhikr on one date.
-    The count is capped at 100 (the daily target).
+    The count has no upper limit.
     """
 
     __tablename__ = 'dhikr'
@@ -65,5 +65,5 @@ class Dhikr(db.Model):
             f'<Dhikr {self.user_id} - '
             f'{self.date} - '
             f'{self.dhikr} - '
-            f'{self.count}/100>'
+            f'{self.count}>'
         )

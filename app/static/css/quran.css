@@ -1608,3 +1608,11 @@
         animation: none !important;
     }
 }
+/* Smooth translation change */
+body {
+    transition: opacity 0.18s ease;
+}
+
+body.translation-changing {
+    opacity: 0;
+}
