@@ -5,7 +5,7 @@ from app.models.prayer import Prayer
 from app.models.attendance import Attendance
 from app.models.quran import QuranReading
 from app.services.prayer_times import PrayerTimesService
-from app.date_utils import get_user_start_date, get_local_today
+from app.date_utils import get_user_start_date, get_local_today, APP_TIMEZONE
 from flask import current_app
 
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -90,8 +90,8 @@ def home():
         for name in ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha']:
             formatted_times[name] = PrayerTimesService.format_time(prayer_times.get(name))
 
-    # Current time for greeting
-    now = datetime.now()
+    # Current time for greeting — always in the app timezone (Asia/Kolkata)
+    now = datetime.now(APP_TIMEZONE)
     hour = now.hour
     if 5 <= hour < 12:
         greeting = 'Assalamu Alaikum'

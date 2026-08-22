@@ -7,6 +7,8 @@ import requests
 from datetime import datetime, date
 from flask import current_app
 
+from app.date_utils import APP_TIMEZONE
+
 
 class PrayerTimesService:
     """Service for fetching and calculating prayer times.
@@ -245,7 +247,10 @@ class PrayerTimesService:
         if not prayer_times:
             return None, None
 
-        now = datetime.now().time()
+        # IMPORTANT: Compare using the app's reference timezone
+        # (Asia/Kolkata) — the same timezone the AlAdhan API returns
+        # prayer times for the configured coordinates in.
+        now = datetime.now(APP_TIMEZONE).time()
         upcoming = []
 
         for name in cls.PRAYER_NAMES:
@@ -263,7 +268,9 @@ class PrayerTimesService:
             upcoming.sort(key=lambda x: x[1])
             return upcoming[0]
 
-        # All prayers passed, next is Fajr tomorrow
+        # All of today's prayers have passed — the next prayer is
+        # Salah (Fajr) of the next day. Today's Fajr time is a close
+        # approximation for the next-day Fajr display.
         return 'Fajr', prayer_times.get('Fajr')
 
     @classmethod
